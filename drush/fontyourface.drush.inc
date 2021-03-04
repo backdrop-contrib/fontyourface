@@ -31,7 +31,7 @@ function fontyourface_drush_command() {
     'callback' => 'fontyourface_fyf_status',
     'drupal dependencies' => array('fontyourface'),
     'description' => 'Displays general @font-your-face status information',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'bootstrap' => DRUSH_BOOTSTRAP_BACKDROP_FULL,
     'aliases' => array('fyfs'),
   );
   $items['fyf-import'] = array(
@@ -41,7 +41,7 @@ function fontyourface_drush_command() {
     'arguments' => array(
       'providers' => '(optional) A space delimited list of providers.',
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'bootstrap' => DRUSH_BOOTSTRAP_BACKDROP_FULL,
     'aliases' => array('fyfi'),
     'examples' => array(
       'drush fyfi' => 'Import fonts from all enabled providers.',

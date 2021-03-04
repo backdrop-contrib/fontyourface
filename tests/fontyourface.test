@@ -5,17 +5,7 @@
  * Provides tests for simpletest.
  */
 
-class FontyourfaceSaveFontTestCase extends DrupalWebTestCase {
-
-  public function getInfo() {
-
-    return array(
-      'name' => t('Save font'),
-      'description' => t('Saves new font and updates existing font.'),
-      'group' => t('@font-your-face'),
-    );
-
-  } // getInfo
+class FontyourfaceSaveFontTestCase extends BackdropWebTestCase {
 
   public function setUp() {
 

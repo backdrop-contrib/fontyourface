@@ -167,7 +167,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
       return;
     } // if
 
-    $values = drupal_explode_tags($form_state['values']['options']['value']);
+    $values = backdrop_explode_tags($form_state['values']['options']['value']);
     $tids = $this->validate_tag_strings($form['value'], $values);
 
     if ($tids) {
@@ -224,7 +224,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
       return;
     } // if
 
-    $values = drupal_explode_tags($form_state['values'][$identifier]);
+    $values = backdrop_explode_tags($form_state['values'][$identifier]);
 
     $tids = $this->validate_tag_strings($form[$identifier], $values);
 

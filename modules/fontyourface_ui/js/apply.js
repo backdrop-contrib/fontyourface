@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.fontyourfaceBrowse = {
+  Backdrop.behaviors.fontyourfaceBrowse = {
 
     attach:function(context, settings) {
 
@@ -32,7 +32,7 @@
 
     } // attach
 
-  } // Drupal.behaviors.fontyourfaceAddForm
+  } // Backdrop.behaviors.fontyourfaceAddForm
 
   function fontyourfaceCssSelectChange() {
 

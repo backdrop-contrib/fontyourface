@@ -29,16 +29,16 @@ class views_handler_field_fontyourface_enable_disable extends views_handler_fiel
 
     $enabled = $this->get_value($values, 'enabled');
     $fid = $this->get_value($values, 'fid');
-    $destination = drupal_get_destination();
+    $destination = backdrop_get_destination();
 
     if ($enabled) {
 
-      return l(t('Disable'), 'admin/appearance/fontyourface/disable/' . $fid . '?' . drupal_http_build_query($destination), array('attributes' => array('class' => 'disable-link')));
+      return l(t('Disable'), 'admin/appearance/fontyourface/disable/' . $fid . '?' . backdrop_http_build_query($destination), array('attributes' => array('class' => 'disable-link')));
 
     } // if
     else {
 
-      return l(t('Enable'), 'admin/appearance/fontyourface/enable/' . $fid . '?' . drupal_http_build_query($destination), array('attributes' => array('class' => 'enable-link')));
+      return l(t('Enable'), 'admin/appearance/fontyourface/enable/' . $fid . '?' . backdrop_http_build_query($destination), array('attributes' => array('class' => 'enable-link')));
 
     } // else
 

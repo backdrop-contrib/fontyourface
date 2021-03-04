@@ -6,9 +6,9 @@
  */
 
 /**
- * Re-usable function for the 7.2 schema.
+ * Re-usable function for the 1.2 schema.
  */
-function fontyourface_7200_schema() {
+function fontyourface_1200_schema() {
 
   $schema = array();
 
@@ -196,108 +196,31 @@ function fontyourface_7200_schema() {
 
   return $schema;
 
-} // fontyourface_7200_schema
+} // fontyourface_1200_schema
 
 /**
  * Implements hook_schema().
  */
 function fontyourface_schema() {
 
-  return fontyourface_7200_schema();
+  return fontyourface_1200_schema();
 
 } // fontyourface_schema
 
 /**
- * Moves admin interface to fontyourface_ui module.
+ * Convert variables to config.
  */
-function fontyourface_update_7200() {
+function fontyourface_update_1000() {
+  // Migrate variables to config.
+  $config = config('fontyourface.settings');
+  $config->set('fontyourface_short_preview_text', update_variable_get('fontyourface_short_preview_text', 'AaGg'));
+  $config->set('fontyourface_detailed_logging', update_variable_get('fontyourface_detailed_logging', FALSE));
+  $config->set('fontyourface_load_everywhere', update_variable_get('fontyourface_load_everywhere', TRUE));
+  $config->set('fontyourface_css_md5', update_variable_get('fontyourface_css_md5', ''));
+  $config->save();
 
-  // Move UI over to new fontyourface_ui module.
-
-  module_enable(array('fontyourface_ui'));
-  views_invalidate_cache();
-
-  // Add new fields to schema.
-
-  $schema = fontyourface_7200_schema();
-  db_add_field('fontyourface_font', 'css_fallbacks', $schema['fontyourface_font']['fields']['css_fallbacks']);
-  db_add_field('fontyourface_font', 'designer', $schema['fontyourface_font']['fields']['designer']);
-  db_add_field('fontyourface_font', 'designer_url', $schema['fontyourface_font']['fields']['designer_url']);
-
-} // fontyourface_update_7200
-
-/**
- * Distinct subsets from tags using an extra 'type' column.
- */
-function fontyourface_update_7201() {
-
-  views_invalidate_cache();
-
-  // Add new column to schema.
-
-  $schema = fontyourface_7200_schema();
-  db_add_field('fontyourface_tag', 'type', $schema['fontyourface_tag']['fields']['type']);
-
-  // Convert existing Google Fonts tags to subsets
-  $query = db_select('fontyourface_tag', 't');
-  $query->innerJoin('fontyourface_tag_font', 'tf', 'tf.tid = t.tid');
-  $query->innerJoin('fontyourface_font', 'f', 'f.fid = tf.fid');
-  $query->distinct();
-  $result = $query->fields('t', array('tid'))
-            ->condition('f.provider', 'google_fonts_api')
-            ->execute();
-
-  foreach ($result as $font) {
-    db_update('fontyourface_tag')
-      ->fields(array('type' => 'subset'))
-      ->condition('tid', $font->tid)
-      ->execute();
-  } // foreach
-
-} // fontyourface_update_7201
-
-/**
- * Make the 'url' column unique to enable exportables
- */
-function fontyourface_update_7202() {
-
-  $schema = fontyourface_7200_schema();
-  try {
-    db_add_unique_key('fontyourface_font', 'url', array('url'));
-  }
-  catch (DatabaseSchemaObjectExistsException $e) {
-    // Fail silently.
-  }
-
-} // fontyourface_update_7202
-
-/**
- * Remove single quotes from CSS selectors
- */
-function fontyourface_update_7203() {
-
-  // Removed - this will not work on SQLite databases.
-  //db_query("UPDATE {fontyourface_font} SET css_family = REPLACE(css_family, '\'', '');");
-
-} // fontyourface_update_7203
-
-/**
- * Remove single quotes from CSS selectors - properly this time.
- */
-function fontyourface_update_7204() {
-  db_update('fontyourface_font')
-    ->expression('css_family', "REPLACE(css_family, '''', '')")
-    ->execute();
+  update_variable_del('fontyourface_short_preview_text');
+  update_variable_del('fontyourface_detailed_logging');
+  update_variable_del('fontyourface_load_everywhere');
+  update_variable_del('fontyourface_css_md5');
 }
-
-/**
- * Implements hook_uninstall().
- */
-function fontyourface_uninstall() {
-
-  variable_del('fontyourface_short_preview_text');
-  variable_del('fontyourface_detailed_logging');
-  variable_del('fontyourface_load_everywhere');
-  variable_del('fontyourface_css_md5');
-
-} // fontyourface_uninstall

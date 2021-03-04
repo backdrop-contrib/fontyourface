@@ -1,6 +1,17 @@
 <?php
 
 /**
+ * Implements hook_config_info().
+ */
+function fontyourface_config_info() {
+  $prefixes['fontyourface.settings'] = array(
+    'label' => t('Core settings'),
+    'group' => t('Font Your Face'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_permission().
  */
 function fontyourface_permission() {
@@ -69,17 +80,17 @@ function fontyourface_add_theme_info_fonts() {
 
               if (fontyourface_count_fonts($font_provider) > 0) {
 
-                drupal_set_message(t('The font declaration %declaration that is added to the theme .info file cannot be loaded. Make sure the font exists in the %provider font list.', array('%declaration' => $declaration, '%provider' => $font_provider)), 'error');
+                backdrop_set_message(t('The font declaration %declaration that is added to the theme .info file cannot be loaded. Make sure the font exists in the %provider font list.', array('%declaration' => $declaration, '%provider' => $font_provider)), 'error');
 
               } //if
               elseif (module_exists('fontyourface_ui')) {
 
-                drupal_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. !import to add fonts.', array('%provider' => check_plain($font_provider), '!import' => l(t('Run import'), 'admin/config/user-interface/fontyourface'))), 'error');
+                backdrop_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. !import to add fonts.', array('%provider' => check_plain($font_provider), '!import' => l(t('Run import'), 'admin/config/user-interface/fontyourface'))), 'error');
 
               } // elseif
               else {
 
-                drupal_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. Enable !module module and run import to add fonts.', array('%provider' => check_plain($font_provider), '!module' => l('@font-your-face UI', 'admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
+                backdrop_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. Enable !module module and run import to add fonts.', array('%provider' => check_plain($font_provider), '!module' => l('@font-your-face UI', 'admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
 
               } // else
 
@@ -91,7 +102,7 @@ function fontyourface_add_theme_info_fonts() {
 
       } // if
       else {
-        drupal_set_message(t('The font provider @provider is not enabled yet. Please <a href="!module_path">enable</a> it first.', array('@provider' => $font_provider, '!module_path' => url('admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
+        backdrop_set_message(t('The font provider @provider is not enabled yet. Please <a href="!module_path">enable</a> it first.', array('@provider' => $font_provider, '!module_path' => url('admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
       } // else
 
     } // foreach
@@ -153,14 +164,14 @@ function fontyourface_count_fonts($provider = NULL, $status = NULL) {
 } //fontyourface_count_fonts
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function fontyourface_preprocess_html(&$vars) {
+function fontyourface_preprocess_page(&$vars) {
 
   // Only load fonts when the default theme is loaded.
-  if (!variable_get('fontyourface_load_everywhere', TRUE)) {
+  if (!config_get('fontyourface.settings', 'fontyourface_load_everywhere')) {
     global $theme;
-    if ($theme != variable_get('theme_default', 'bartik')) {
+    if ($theme != config_get('system.core', 'theme_default')) {
       return;
     }
   }
@@ -170,10 +181,10 @@ function fontyourface_preprocess_html(&$vars) {
   $css = fontyourface_generate_css($fonts);
   $css_md5 = md5($css);
 
-  if ($css_md5 != variable_get('fontyourface_css_md5', '')) {
+  if ($css_md5 != config_get('fontyourface.settings', 'fontyourface_css_md5')) {
 
     fontyourface_rewrite_css($css);
-    variable_set('fontyourface_css_md5', $css_md5);
+    config_set('fontyourface.settings', 'fontyourface_css_md5', $css_md5);
 
   } // if
 
@@ -237,7 +248,7 @@ function fontyourface_add_css_in_preprocess(&$vars, $css_path, $type = 'public')
 
   if ($type == 'remote') {
 
-    drupal_add_css($css_path, array('type' => 'external', 'group' => CSS_THEME));
+    backdrop_add_css($css_path, array('type' => 'external', 'group' => CSS_THEME));
 
   } // if
   else {
@@ -248,7 +259,7 @@ function fontyourface_add_css_in_preprocess(&$vars, $css_path, $type = 'public')
 
     } // if
 
-    drupal_add_css($css_path, array('group' => CSS_THEME, 'basename' => 'fontyourface-' . md5($css_path)));
+    backdrop_add_css($css_path, array('group' => CSS_THEME, 'basename' => 'fontyourface-' . md5($css_path)));
 
   } // else
 
@@ -294,22 +305,6 @@ function fontyourface_get_font($fid, $clear = FALSE) {
 
 } // fontyourface_get_font
 
-
-
-/**
- * Implements hook_features_api().
- */
-function fontyourface_features_api() {
-  return array(
-    'fontyourface' => array(
-      'name' => '@font-your-face',
-      'file' => drupal_get_path('module', 'fontyourface') . '/fontyourface.features.inc',
-      'default_hook' => 'fontyourface_features_default_font',
-      'feature_source' => TRUE,
-    ),
-  );
-}
-
 /**
  * Adds tags to a font object.
  */
@@ -342,7 +337,7 @@ function fontyourface_import_fonts($provider) {
 
     $import_function = $provider . '_fontyourface_import';
     if ($import_function()) {
-      drupal_set_message(t('@provider import complete.', array('@provider' => $provider_info['name'])));
+      backdrop_set_message(t('@provider import complete.', array('@provider' => $provider_info['name'])));
     }
 
   } // if
@@ -449,13 +444,13 @@ function fontyourface_save_font(&$font, $revert = FALSE) {
     }
 
     fontyourface_add_font_tags($font);
-    drupal_write_record('fontyourface_font', $font, 'fid');
+    backdrop_write_record('fontyourface_font', $font, 'fid');
     $tags = $font->tags;
 
   } // if
   else {
 
-    drupal_write_record('fontyourface_font', $font);
+    backdrop_write_record('fontyourface_font', $font);
 
   } // else
 
@@ -509,13 +504,13 @@ function fontyourface_save_tag(&$tag) {
   if ($exists) {
     // Check that existing tag is lowercase
     if (!ctype_lower($tag->name)) {
-      $tag->name = drupal_strtolower($tag->name);
+      $tag->name = backdrop_strtolower($tag->name);
     }
     $tag->tid = $exists->tid;
   } // if
   else {
-    $tag->name = drupal_strtolower($tag->name);
-    drupal_write_record('fontyourface_tag', $tag);
+    $tag->name = backdrop_strtolower($tag->name);
+    backdrop_write_record('fontyourface_tag', $tag);
   } // else
 
 } // fontyourface_save_tag
@@ -548,7 +543,7 @@ function fontyourface_short_preview_text($font) {
     return $function($font);
   } // if
 
-  return variable_get('fontyourface_short_preview_text', 'AaGg');
+  return config_get('fontyourface.settings', 'fontyourface_short_preview_text');
 
 } // fontyourface_short_preview_text
 
@@ -688,7 +683,7 @@ function fontyourface_delete_unused_tags() {
  */
 function fontyourface_log($message, $arguments) {
 
-  if (variable_get('fontyourface_detailed_logging', FALSE)) {
+  if (config_get('fontyourface', 'fontyourface_detailed_logging') == TRUE) {
     watchdog('@font-your-face', $message, $arguments, WATCHDOG_INFO);
   } // if
 
@@ -701,8 +696,8 @@ function fontyourface_parse_theme_info_file() {
 
   $font_declarations = array();
 
-  $theme_default = variable_get('theme_default', 'bartik');
-  $info = drupal_parse_info_file(drupal_get_path('theme', $theme_default) . '/' . $theme_default . '.info');
+  $theme_default = config_get('system.core', 'theme_default');
+  $info = backdrop_parse_info_file(backdrop_get_path('theme', $theme_default) . '/' . $theme_default . '.info');
 
   if (isset($info['fonts'])) {
     $font_declarations = $info['fonts'];
@@ -720,7 +715,7 @@ function fontyourface_ajax_render_alter(&$commands) {
 
   // Clear out any non-font CSS so it doesn't get re-added.
 
-  drupal_static_reset('drupal_add_css');
+  backdrop_static_reset('backdrop_add_css');
 
   // Get all the CSS that would otherwise be added in preprocess_html functions.
 

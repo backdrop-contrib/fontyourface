@@ -3,7 +3,7 @@ var fontyourfaceSampleMarkup = '';
 
 (function ($) {
 
-  Drupal.behaviors.fontyourfaceAddForm = {
+  Backdrop.behaviors.fontyourfaceAddForm = {
 
     attach:function(context, settings) {
 
@@ -52,7 +52,7 @@ var fontyourfaceSampleMarkup = '';
 
     } // attach
 
-  } // Drupal.behaviors.fontyourfaceAddForm
+  } // Backdrop.behaviors.fontyourfaceAddForm
 
   function fontyourfaceCssSelectChange() {
 

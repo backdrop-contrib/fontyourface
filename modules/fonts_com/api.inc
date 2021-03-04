@@ -17,7 +17,7 @@ function fonts_com_get_fonts_in_project($project_id) {
 
   $path = '/rest/json/Fonts/?wfspstart=0&wfsplimit=100&wfspid=' . $project_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
 
   if ($response->code == 200) {
 
@@ -33,8 +33,8 @@ function fonts_com_get_fonts_in_project($project_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error importing a project (@project) font list from Fonts.com.', array('@project' => $project_id)), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error importing a project (@project) font list from Fonts.com.', array('@project' => $project_id)), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -70,9 +70,9 @@ function fonts_com_get_all_fonts($start = 0, $limit = 100, $filters = array()) {
     'wfsplimit' => $limit,
   ) + $filters;
 
-  $path = '/rest/json/AllFonts/?' . drupal_http_build_query($query);
+  $path = '/rest/json/AllFonts/?' . backdrop_http_build_query($query);
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
 
   if ($response->code == 200) {
 
@@ -85,8 +85,8 @@ function fonts_com_get_all_fonts($start = 0, $limit = 100, $filters = array()) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error importing a font list from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error importing a font list from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -101,7 +101,7 @@ function fonts_com_get_all_fonts_count() {
 
   $path = '/rest/json/AllFonts/?wfspstart=0&wfsplimit=1';
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
 
   if ($response->code == 200) {
 
@@ -110,8 +110,8 @@ function fonts_com_get_all_fonts_count() {
 
   } // if
 
-  drupal_set_message(t('There was an error importing the font count from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-  fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+  backdrop_set_message(t('There was an error importing the font count from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+  fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   return FALSE;
 
@@ -128,7 +128,7 @@ function fonts_com_get_key_for_account($email, $password) {
 
   $path = '/rest/json/Accounts/?wfsemail=' . $email;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY, 'Password' => $password)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY, 'Password' => $password)));
 
   if ($response->code == 200) {
 
@@ -145,16 +145,16 @@ function fonts_com_get_key_for_account($email, $password) {
     } // if
     else {
 
-      drupal_set_message(t('The submitted email and password were not recognized by Fonts.com.'), 'error');
-      fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+      backdrop_set_message(t('The submitted email and password were not recognized by Fonts.com.'), 'error');
+      fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
     } // else
 
   } // if
   else {
 
-    drupal_set_message(t('There was an error getting your key from Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error getting your key from Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -169,7 +169,7 @@ function fonts_com_get_existing_key_for_account($email, $password) {
 
   $path = '/rest/json/GetToken/?wfsemail=' . $email;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY, 'Password' => $password)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY, 'Password' => $password)));
 
   if ($response->code == 200) {
 
@@ -200,7 +200,7 @@ function fonts_com_create_account($email, $first_name, $last_name) {
 
   $path = '/rest/json/Accounts/';
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY), 'method' => 'POST', 'data' => 'wfsfirst_name=' . $first_name . '&wfslast_name=' . $last_name . '&wfsemail=' . $email));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => array('AppKey' => FONTS_COM_API_APP_KEY), 'method' => 'POST', 'data' => 'wfsfirst_name=' . $first_name . '&wfslast_name=' . $last_name . '&wfsemail=' . $email));
 
   if ($response->code == 200) {
 
@@ -217,16 +217,16 @@ function fonts_com_create_account($email, $first_name, $last_name) {
     } // if
     else {
 
-      drupal_set_message(t('Fonts.com as unable to create your account.'), 'error');
-      fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+      backdrop_set_message(t('Fonts.com as unable to create your account.'), 'error');
+      fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
     } // else
 
   } // if
   else {
 
-    drupal_set_message(t('There was an error creating an account at Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error creating an account at Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -243,7 +243,7 @@ function fonts_com_get_domains_in_project($project_id) {
 
   $path = '/rest/json/Domains/?wfspstart=0&wfsplimit=100&wfspid=' . $project_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
 
   if ($response->code == 200) {
 
@@ -259,8 +259,8 @@ function fonts_com_get_domains_in_project($project_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error importing a project (@project) domain list from Fonts.com.', array('@project' => $project_id)), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error importing a project (@project) domain list from Fonts.com.', array('@project' => $project_id)), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -310,15 +310,15 @@ function fonts_com_delete_domain($project_id, $domain_id) {
 
   $path = '/rest/json/Domains/?wfspid=' . $project_id . '&wfsdomain_id=' . $domain_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'DELETE'));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'DELETE'));
 
   if ($response->code == 200) {
     return TRUE;
   } // if
   else {
 
-    drupal_set_message(t('There was an error deleting a domain (@domain) in a project (@project) on Fonts.com.', array('@domain' => $domain_id, '@project' => $project_id)), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error deleting a domain (@domain) in a project (@project) on Fonts.com.', array('@domain' => $domain_id, '@project' => $project_id)), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -333,15 +333,15 @@ function fonts_com_add_domain($project_id, $domain_name) {
 
   $path = '/rest/json/Domains/?wfspid=' . $project_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'POST', 'data' => 'wfsdomain_name=' . $domain_name));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'POST', 'data' => 'wfsdomain_name=' . $domain_name));
 
   if ($response->code == 200) {
     return TRUE;
   } // if
   else {
 
-    drupal_set_message(t('There was an error adding a domain (@domain) in a project (@project) on Fonts.com.', array('@domain' => $domain_name, '@project' => $project_id)), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error adding a domain (@domain) in a project (@project) on Fonts.com.', array('@domain' => $domain_name, '@project' => $project_id)), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -358,7 +358,7 @@ function fonts_com_get_projects() {
 
   $path = '/rest/json/Projects/?wfspstart=0&wfsplimit=100';
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path)));
 
   if ($response->code == 200) {
 
@@ -374,8 +374,8 @@ function fonts_com_get_projects() {
   } // if
   else {
 
-    drupal_set_message(t('There was an error importing project list from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error importing project list from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -421,7 +421,7 @@ function fonts_com_save_project(&$project) {
 
   } // if
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => $method, 'data' => 'wfsproject_name=' . $project->ProjectName));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => $method, 'data' => 'wfsproject_name=' . $project->ProjectName));
 
   if ($response->code == 200) {
 
@@ -442,8 +442,8 @@ function fonts_com_save_project(&$project) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error saving project to Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error saving project to Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -458,7 +458,7 @@ function fonts_com_add_font_to_project($font_id, $project_id) {
 
   $path = '/rest/json/Fonts/?wfspid=' . $project_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'POST', 'data' => 'wfsfid=' . $font_id));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'POST', 'data' => 'wfsfid=' . $font_id));
 
   if ($response->code == 200) {
 
@@ -469,8 +469,8 @@ function fonts_com_add_font_to_project($font_id, $project_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error enabling the font on Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error enabling the font on Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -485,7 +485,7 @@ function fonts_com_delete_font_from_project($font_id, $project_id) {
 
   $path = '/rest/json/Fonts/?wfspid=' . $project_id . '&wfsfid=' . $font_id;
 
-  $response = drupal_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'DELETE'));
+  $response = backdrop_http_request(FONTS_COM_API_BASE_URL . $path, array('headers' => fonts_com_api_headers($path), 'method' => 'DELETE'));
 
   if ($response->code == 200) {
 
@@ -495,8 +495,8 @@ function fonts_com_delete_font_from_project($font_id, $project_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error disabling the font on Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error disabling the font on Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -528,7 +528,7 @@ function fonts_com_set_font_selector($project_id, $font_id, $selector) {
 
     $path = '/rest/json/Selectors/?wfspid=' . $project_id;
 
-    $response = drupal_http_request(
+    $response = backdrop_http_request(
       FONTS_COM_API_BASE_URL . $path,
       array(
         'headers' => fonts_com_api_headers($path),
@@ -545,8 +545,8 @@ function fonts_com_set_font_selector($project_id, $font_id, $selector) {
     } // if
     else {
 
-      drupal_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
-      fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+      backdrop_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
+      fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
     } // else
 
@@ -563,7 +563,7 @@ function fonts_com_delete_selector_in_product($project_id, $selector_id) {
 
   $path = '/rest/json/Selectors/?wfspid=' . $project_id . '&wfsselector_id=' . $selector_id . '&wfsnopublish=1';
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),
@@ -578,8 +578,8 @@ function fonts_com_delete_selector_in_product($project_id, $selector_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error removing a CSS selector on Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error removing a CSS selector on Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -594,7 +594,7 @@ function fonts_com_add_selector_to_project($project_id, $selector) {
 
   $path = '/rest/json/Selectors/?wfspid=' . $project_id;
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),
@@ -610,8 +610,8 @@ function fonts_com_add_selector_to_project($project_id, $selector) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -628,7 +628,7 @@ function fonts_com_get_selectors_in_project($project_id) {
 
   $path = '/rest/json/Selectors/?wfspid=' . $project_id;
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),
@@ -648,8 +648,8 @@ function fonts_com_get_selectors_in_project($project_id) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error adding a CSS selector on Fonts.com.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -666,7 +666,7 @@ function fonts_com_get_filter_choices($filter) {
 
   $path = '/rest/json/FilterValues/?wfsfiltertype=' . $filter;
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),
@@ -686,8 +686,8 @@ function fonts_com_get_filter_choices($filter) {
   } // if
   else {
 
-    drupal_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -700,9 +700,9 @@ function fonts_com_get_filter_choices($filter) {
  */
 function fonts_com_get_all_filter_choices($current_filters) {
 
-  $path = '/rest/json/AllFilterValues/?' . drupal_http_build_query($current_filters);
+  $path = '/rest/json/AllFilterValues/?' . backdrop_http_build_query($current_filters);
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),
@@ -733,16 +733,16 @@ function fonts_com_get_all_filter_choices($current_filters) {
     } // if
     else {
 
-      drupal_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-      fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+      backdrop_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+      fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
     } // else
 
   } // if
   else {
 
-    drupal_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error getting filter choices from Fonts.com. Check !configuration.', array('!configuration' => l(t('configuration'), 'admin/config/user-interface/fontyourface/fonts_com'))), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -757,7 +757,7 @@ function fonts_com_publish() {
 
   $path = '/rest/json/Publish/';
 
-  $response = drupal_http_request(
+  $response = backdrop_http_request(
     FONTS_COM_API_BASE_URL . $path,
     array(
       'headers' => fonts_com_api_headers($path),

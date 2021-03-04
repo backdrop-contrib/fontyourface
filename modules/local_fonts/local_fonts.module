@@ -22,7 +22,7 @@ function local_fonts_menu() {
 
   $items['admin/config/user-interface/fontyourface/local_fonts'] = array(
     'title' => 'Import Local Font',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('local_fonts_add_form'),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_LOCAL_TASK,
@@ -30,7 +30,7 @@ function local_fonts_menu() {
 
   $items['admin/appearance/fontyourface/local_fonts/delete/%'] = array(
     'title' => 'Delete Local Font',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('local_fonts_delete_form', 5),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_CALLBACK,
@@ -81,7 +81,7 @@ function local_fonts_delete_button_submit($form, &$form_state) {
 
   $destination = '';
   if (isset($_GET['destination'])) {
-    $destination = drupal_get_destination();
+    $destination = backdrop_get_destination();
     unset($_GET['destination']);
   }
   $form_state['redirect'] = array('admin/appearance/fontyourface/local_fonts/delete/' . $form['fid']['#value'], $destination);
@@ -199,8 +199,7 @@ function local_fonts_add_form_validate($form, &$form_state) {
 
     foreach ($files as $key => $filename) {
 
-      $file_object = new stdClass;
-      $file_object->filename = $filename;
+      $file_object = new File(array('filename' => $filename));
 
       if (!empty($file_object->filename)) {
 
@@ -279,7 +278,7 @@ function local_fonts_add_form_submit($form, &$form_state) {
           // Copy the temporary file to permanent location.
 
             $file->status = FILE_STATUS_PERMANENT;
-            $file = file_save($file);
+            file_save($file);
             $destination_font_files[$format] = $destination_directory . '/' . $file->filename;
 
             if ($format == 'eot') {
@@ -357,11 +356,11 @@ function local_fonts_add_form_submit($form, &$form_state) {
 
     fontyourface_save_font($local_font);
 
-    drupal_set_message(t('@font added. Make sure to enable it before you can use it.', array('@font' => $font_family)));
+    backdrop_set_message(t('@font added. Make sure to enable it before you can use it.', array('@font' => $font_family)));
 
   } // if
 
-  drupal_goto('admin/config/user-interface/fontyourface');
+  backdrop_goto('admin/config/user-interface/fontyourface');
 
 } // local_fonts_add_form_submit
 
@@ -400,7 +399,7 @@ function local_fonts_delete_form_submit($form, &$form_state) {
 
   if ($form_state['input']['op'] == t('Cancel')) {
 
-    drupal_goto('admin/appearance/fontyourface/edit/' . $form['fid']['#value']);
+    backdrop_goto('admin/appearance/fontyourface/edit/' . $form['fid']['#value']);
 
   } // if
   else {
@@ -408,8 +407,8 @@ function local_fonts_delete_form_submit($form, &$form_state) {
     $font = fontyourface_get_font($form['fid']['#value']);
     local_fonts_delete_font($font);
 
-    drupal_set_message(t('@font deleted.', array('@font' => $font->name)));
-    drupal_goto('admin/appearance/fontyourface');
+    backdrop_set_message(t('@font deleted.', array('@font' => $font->name)));
+    backdrop_goto('admin/appearance/fontyourface');
 
   } // else
 
@@ -423,7 +422,7 @@ function local_fonts_delete_font($font) {
   // Bail out if attempting to delete a non-local font.
 
   if ($font->provider != 'local_fonts') {
-    drupal_set_message(t('This is not a local font and cannot be deleted.'));
+    backdrop_set_message(t('This is not a local font and cannot be deleted.'));
     return TRUE;
   } // if
 

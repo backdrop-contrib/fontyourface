@@ -103,7 +103,7 @@ function fontsquirrel_fontyourface_enable($font) {
 
   if ($font->css_family == '') {
 
-    $api_result = drupal_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $metadata['path']);
+    $api_result = backdrop_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $metadata['path']);
 
     if ($api_result->code == '200') {
 
@@ -117,7 +117,7 @@ function fontsquirrel_fontyourface_enable($font) {
       } // if
       else {
 
-        drupal_set_message(t('There was an error importing font information for %fontname from Font Squirrel. Font not found in API.', array('%fontname' => $font->name)), 'error');
+        backdrop_set_message(t('There was an error importing font information for %fontname from Font Squirrel. Font not found in API.', array('%fontname' => $font->name)), 'error');
         $success = FALSE;
 
       } // else
@@ -125,7 +125,7 @@ function fontsquirrel_fontyourface_enable($font) {
     } // if
     else {
 
-      drupal_set_message(t('There was an error importing font information for %fontname from Font Squirrel. API not responding.', array('%fontname' => $font-name)), 'error');
+      backdrop_set_message(t('There was an error importing font information for %fontname from Font Squirrel. API not responding.', array('%fontname' => $font-name)), 'error');
       $success = FALSE;
 
     } // else
@@ -142,11 +142,11 @@ function fontsquirrel_fontyourface_enable($font) {
 
     // Download file .zip file
 
-    if (!file_exists(drupal_realpath($zip_location))) {
+    if (!file_exists(backdrop_realpath($zip_location))) {
 
       $kit_url = 'http://www.fontsquirrel.com/fontfacekit/' . $metadata['path'];
 
-      $kit_result = drupal_http_request($kit_url);
+      $kit_result = backdrop_http_request($kit_url);
 
       if ($kit_result->code == 200) {
 
@@ -161,7 +161,7 @@ function fontsquirrel_fontyourface_enable($font) {
         } // if
         else {
 
-          drupal_set_message(t('There was an error saving font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
+          backdrop_set_message(t('There was an error saving font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
           $success = FALSE;
 
         } // else
@@ -169,7 +169,7 @@ function fontsquirrel_fontyourface_enable($font) {
       } // if
       else {
 
-        drupal_set_message(t('There was an error downloading font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
+        backdrop_set_message(t('There was an error downloading font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
         $success = FALSE;
 
       } // else
@@ -180,7 +180,7 @@ function fontsquirrel_fontyourface_enable($font) {
 
       // Unzip the .zip file
 
-      if (function_exists('zip_open') && $zip = zip_open(drupal_realpath($zip_location))) {
+      if (function_exists('zip_open') && $zip = zip_open(backdrop_realpath($zip_location))) {
 
         file_prepare_directory($directory_location, FILE_CREATE_DIRECTORY);
 
@@ -203,7 +203,7 @@ function fontsquirrel_fontyourface_enable($font) {
       } // if
       else {
 
-        drupal_set_message(t('Unable to unzip font %fontname at <code>@zip_location</code>. See !zipdocs to enable unzipping, or unzip the file manually and enable this font again.', array(
+        backdrop_set_message(t('Unable to unzip font %fontname at <code>@zip_location</code>. See !zipdocs to enable unzipping, or unzip the file manually and enable this font again.', array(
           '%fontname' => $font->name,
           '@zip_location' => $zip_location,
           '!zipdocs' => l(t('PHP documentation on zip'), 'http://www.php.net/manual/en/zip.installation.php'),
@@ -231,7 +231,7 @@ function fontsquirrel_fontyourface_import() {
 
   $families = array();
 
-  $api_result = drupal_http_request('http://www.fontsquirrel.com/api/fontlist/all');
+  $api_result = backdrop_http_request('http://www.fontsquirrel.com/api/fontlist/all');
 
   if ($api_result->code == '200') {
 
@@ -284,8 +284,8 @@ function fontsquirrel_fontyourface_import() {
   } // if
   else {
 
-    drupal_set_message(t('There was an error downloading font list from Font Squirrel.'), 'error');
-    fontyourface_log('Invalid drupal_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    backdrop_set_message(t('There was an error downloading font list from Font Squirrel.'), 'error');
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
   } // else
 
@@ -303,7 +303,7 @@ function fontsquirrel_batch_import($families, &$context) {
 
   // Import variants of one family.
   $family = array_shift($context['sandbox']['families']);
-  $variants_raw = drupal_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $family);
+  $variants_raw = backdrop_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $family);
   $variants = json_decode($variants_raw->data);
   foreach ($variants as $key => $variant) {
     $metadata = array(
@@ -316,7 +316,7 @@ function fontsquirrel_batch_import($families, &$context) {
     $font->url = 'http://www.fontsquirrel.com/fonts/' . $variant->family_urlname;
     // To make URL unique, add a fake anchor, except for the first variant.
     if ($key != 0) {
-      $font->url .= '#' . drupal_strtolower($variant->fontface_name);
+      $font->url .= '#' . backdrop_strtolower($variant->fontface_name);
     }
     $font->css_family = $variant->fontface_name;
     $font->provider = 'fontsquirrel';

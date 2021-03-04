@@ -4,7 +4,8 @@ package = @font-your-face
 dependencies[] = fontyourface
 dependencies[] = views
 configure = admin/config/user-interface/fontyourface
-core = 7.x
+backdrop = 1.x
+type = module
 
 files[] = views/fontyourface.views_default.inc
 files[] = views/views_handler_field_fontyourface_font.inc

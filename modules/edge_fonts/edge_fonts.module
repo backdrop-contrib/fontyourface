@@ -45,7 +45,7 @@ function edge_fonts_fontyourface_import() {
       $variants++;
     }
   }
-  drupal_set_message(t('!fonts Edge Fonts of !families families imported/updated.', array('!fonts' => $variants, '!families' => count($families))));
+  backdrop_set_message(t('!fonts Edge Fonts of !families families imported/updated.', array('!fonts' => $variants, '!families' => count($families))));
   fontyourface_log('!fonts Edge Fonts of !families families imported/updated.', array('!fonts' => $variants, '!families' => count($families)));
   // Return TRUE if we succeeded in importing something, FALSE if not.
   return (bool) count($families);
@@ -79,7 +79,7 @@ function edge_fonts_preprocess_html(&$vars) {
         $families[] = $family . ':' . implode(',', $variants) . $all_subsets;
       }
       $js = $base . implode(';', $families) . '.js';
-      drupal_add_js($js, array('type' => 'external'));
+      backdrop_add_js($js, array('type' => 'external'));
     }
   }
 }

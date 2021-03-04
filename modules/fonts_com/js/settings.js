@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.fontsComSettings = {
+  Backdrop.behaviors.fontsComSettings = {
 
     attach:function(context, settings) {
 
@@ -27,12 +27,12 @@
 
     } // attach
 
-  } // Drupal.behaviors.fontsComSettings
+  } // Backdrop.behaviors.fontsComSettings
 
   function fontsComSettingsCollapse(id) {
 
     if (!$(id).is('.collapsed')) {
-      Drupal.toggleFieldset(id);
+      Backdrop.toggleFieldset(id);
     } // if
 
   } // fontsComSettingsCollapse

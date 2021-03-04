@@ -1,6 +1,6 @@
 (function ($) {
 
-Drupal.wysiwyg.plugins.fontyourface = {
+Backdrop.wysiwyg.plugins.fontyourface = {
 
   /**
    * Returns whether the passed node belongs to this plugin.
@@ -47,7 +47,7 @@ Drupal.wysiwyg.plugins.fontyourface = {
         } // else
 
         if (typeof content != 'undefined') {
-          Drupal.wysiwyg.instances[instanceId].insert(content);
+          Backdrop.wysiwyg.instances[instanceId].insert(content);
         } // if
 
       } // if

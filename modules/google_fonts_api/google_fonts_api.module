@@ -134,23 +134,22 @@ function google_fonts_api_preprocess_html(&$vars) {
 function google_fonts_api_fontyourface_import() {
 
   // Return the JSON object with all available fonts
-  // For now, it uses the API key of BarisW (co-maintainer of this module)
-  
+
   // This key is limited to 10.000 requests per day, which should
   // be sufficient as it is only used when selecting fonts in the
-  // admin interface. After that, the fonts are cached in Drupal.
+  // admin interface. After that, the fonts are cached in Backdrop.
 
   $success = TRUE;
   $fonts = array();
 
-  $result = drupal_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=' . variable_get('google_fonts_api_key', 'AIzaSyBgeqKlFdYj3Y7VwmrEXnXzpnx5TfKXG4o'));
+  $result = backdrop_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=' . config_get('google_fonts_api.settings', 'google_fonts_api_key'));
 
-  fontyourface_log('drupal_http_request response: @response', array('@response' => print_r($result, TRUE)));
+  fontyourface_log('backdrop_http_request response: @response', array('@response' => print_r($result, TRUE)));
 
   if ($result->code != 200) {
 
     $success = FALSE;
-    drupal_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com). Error: %error', array('%error' => $result->error)), 'error');
+    backdrop_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com). Error: %error', array('%error' => $result->error)), 'error');
 
   } //if
   elseif (isset($result->data)) {
@@ -173,9 +172,9 @@ function google_fonts_api_fontyourface_import() {
     fontyourface_save_font($font);
 
   } // foreach
-  
-  return $success; 
-  
+
+  return $success;
+
 } // google_fonts_api_fontyourface_import
 
 /**
@@ -187,7 +186,7 @@ function google_fonts_api_views_api() {
 
     return array(
       'api' => 2,
-      'path' => drupal_get_path('module', 'google_fonts_api') . '/views',
+      'path' => backdrop_get_path('module', 'google_fonts_api') . '/views',
     );
 
   } // if
@@ -198,32 +197,32 @@ function google_fonts_api_views_api() {
  * Converts the Google Fonts API JSON results to a generic Fonts object array
  *
  * @param $json_font_list: Array of Font objects
- *   
+ *
  */
 function _google_fonts_api_convert_api_results($json_font_list) {
   $fonts = array();
   foreach ($json_font_list as $json_font) {
     foreach ($json_font->variants as $json_font_variant) {
       foreach ($json_font->subsets as $json_font_subset) {
-      
+
         $font_id = $json_font->family . ' ' . $json_font_variant . ' (' . $json_font_subset . ')';
-        
+
         switch ($json_font_variant) {
           case 'regular':
             $css_style = 'normal';
             $css_weight = 'normal';
             break;
-            
+
           case 'italic':
             $css_style = 'italic';
             $css_weight = 'normal';
             break;
-            
+
           case 'bold':
             $css_style = 'normal';
             $css_weight = 'bold';
             break;
-            
+
           case 'bolditalic':
             $css_style = 'italic';
             $css_weight = 'bold';
@@ -243,7 +242,7 @@ function _google_fonts_api_convert_api_results($json_font_list) {
               $css_weight = substr($json_font_variant, 0, 3);
             } //elseif
         } //switch
-        
+
         $fonts[$font_id] = new stdClass;
         $fonts[$font_id]->name = $font_id;
         $fonts[$font_id]->url = 'http://www.google.com/webfonts/family?family=' . $json_font->family . '&subset=' . $json_font_subset . '#' . $json_font_variant;
@@ -256,7 +255,7 @@ function _google_fonts_api_convert_api_results($json_font_list) {
         $fonts[$font_id]->license = '';
         $fonts[$font_id]->license_url = '';
         $fonts[$font_id]->metadata = serialize(array('path' => $json_font->family . ':' . $json_font_variant, 'subset' => $json_font_subset));
-        
+
         $tag_object = new StdClass;
         $tag_object->type = 'subset';
         $tag_object->name = $json_font_subset;
@@ -265,7 +264,7 @@ function _google_fonts_api_convert_api_results($json_font_list) {
       } //foreach
     } //foreach
   } //foreach
-  
+
   return $fonts;
-  
+
 } // _google_fonts_api_convert_api_results

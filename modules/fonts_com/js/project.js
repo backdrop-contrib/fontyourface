@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.fontsComProject = {
+  Backdrop.behaviors.fontsComProject = {
 
     attach:function(context, settings) {
 
@@ -12,6 +12,6 @@
 
     } // attach
 
-  } // Drupal.behaviors.fontsComProject
+  } // Backdrop.behaviors.fontsComProject
 
 })(jQuery);

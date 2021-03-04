@@ -28,7 +28,7 @@ class views_handler_field_fontyourface_enabled_yes_no extends views_handler_fiel
 
     $enabled = $this->get_value($values, 'enabled');
 
-    // This intentionall not translated, so it can be used in class names.
+    // This is intentionally not translated, so it can be used in class names.
 
     if ($enabled) {
 

@@ -10,7 +10,7 @@ function fonts_com_menu() {
   $items['admin/config/user-interface/fontyourface/fonts_com'] = array(
     'title' => 'Fonts.com',
     'description' => 'Manage settings for Fonts.com',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('fonts_com_setup_form'),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_LOCAL_TASK,
@@ -26,7 +26,7 @@ function fonts_com_menu() {
   $items['admin/config/user-interface/fontyourface/fonts_com/project'] = array(
     'title' => 'Project',
     'description' => 'Project settings for Fonts.com',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('fonts_com_project_form'),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_LOCAL_TASK,
@@ -35,7 +35,7 @@ function fonts_com_menu() {
 
   $items['admin/config/user-interface/fontyourface/fonts_com/project/new'] = array(
     'title' => 'Create new project',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('fonts_com_project_edit_form', ''),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_LOCAL_TASK,
@@ -43,7 +43,7 @@ function fonts_com_menu() {
 
   $items['admin/config/user-interface/fontyourface/fonts_com/project/edit/%'] = array(
     'title' => 'Edit project',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('fonts_com_project_edit_form', 7),
     'access arguments' => array('administer @font-your-face'),
     'type' => MENU_CALLBACK,
@@ -202,7 +202,7 @@ function fonts_com_preprocess_html(&$vars) {
 
       foreach (array_keys($projects) as $project) {
 
-        drupal_add_js($base . $project . '.js', array('type' => 'external'));
+        backdrop_add_js($base . $project . '.js', array('type' => 'external'));
 
       } // foreach
 
@@ -228,7 +228,7 @@ function fonts_com_preprocess_html(&$vars) {
 
       if ($css != '') {
 
-        drupal_add_css($css, array('group' => CSS_THEME, 'type' => 'inline'));
+        backdrop_add_css($css, array('group' => CSS_THEME, 'type' => 'inline'));
 
       } // if
 
@@ -315,8 +315,8 @@ function fonts_com_fontyourface_preview($font, $text = NULL, $size = 18) {
  */
 function fonts_com_setup_form($form, &$form_state) {
 
-  drupal_add_js(drupal_get_path('module', 'fonts_com') . '/js/settings.js', array('weight' => 10));
-  drupal_add_css(drupal_get_path('module', 'fonts_com') . '/css/settings.css');
+  backdrop_add_js(backdrop_get_path('module', 'fonts_com') . '/js/settings.js', array('weight' => 10));
+  backdrop_add_css(backdrop_get_path('module', 'fonts_com') . '/css/settings.css');
 
   $form = array();
 
@@ -418,7 +418,7 @@ function fonts_com_setup_form_submit($form, &$form_state) {
   if ($form_state['input']['op'] == t('Save')) {
 
     variable_set('fonts_com_token', $form_state['values']['fonts_com_token']);
-    drupal_set_message(t('Fonts.com key saved.'));
+    backdrop_set_message(t('Fonts.com key saved.'));
 
   } // if
   elseif ($form_state['input']['op'] == t('Get Key')) {
@@ -428,7 +428,7 @@ function fonts_com_setup_form_submit($form, &$form_state) {
     if ($key) {
 
       variable_set('fonts_com_token', $key);
-      drupal_set_message(t('Fonts.com key saved.'));
+      backdrop_set_message(t('Fonts.com key saved.'));
 
     } // if
 
@@ -439,7 +439,7 @@ function fonts_com_setup_form_submit($form, &$form_state) {
 
     if ($success) {
 
-      drupal_set_message(t('You will receive an email with your new password at the email address you entered, @email. Enter that email and password below to get your key.', array('@email' => $form_state['values']['fonts_com_email'])));
+      backdrop_set_message(t('You will receive an email with your new password at the email address you entered, @email. Enter that email and password below to get your key.', array('@email' => $form_state['values']['fonts_com_email'])));
 
     } // if
 
@@ -488,7 +488,7 @@ function fonts_com_project_form($form, &$form_state) {
       '#value' => t('Edit project'),
       '#attached' => array(
         'js' => array(
-          drupal_get_path('module', 'fonts_com') . '/js/project.js',
+          backdrop_get_path('module', 'fonts_com') . '/js/project.js',
         )
       ),
     );
@@ -496,8 +496,8 @@ function fonts_com_project_form($form, &$form_state) {
   } // if
   else {
 
-    drupal_set_message('Your Fonts.com account currently contains no projects. Start by creating a new project.');
-    drupal_goto('admin/config/user-interface/fontyourface/fonts_com/project/new');
+    backdrop_set_message('Your Fonts.com account currently contains no projects. Start by creating a new project.');
+    backdrop_goto('admin/config/user-interface/fontyourface/fonts_com/project/new');
 
   } // else
 
@@ -553,7 +553,7 @@ function fonts_com_project_form_submit($form, &$form_state) {
       $path_end = 'new';
     } // if
 
-    drupal_goto('admin/config/user-interface/fontyourface/fonts_com/project/' . $path_end);
+    backdrop_goto('admin/config/user-interface/fontyourface/fonts_com/project/' . $path_end);
 
   } // else
 
@@ -690,7 +690,7 @@ function fonts_com_project_edit_form_submit($form, &$form_state) {
 
   if (!$save_needed || fonts_com_save_project($project)) {
 
-    drupal_set_message(t('Project <i>@project</i> saved.', array('@project' => $project->ProjectName)));
+    backdrop_set_message(t('Project <i>@project</i> saved.', array('@project' => $project->ProjectName)));
 
     if ($values['active']) {
 
@@ -717,7 +717,7 @@ function fonts_com_project_edit_form_submit($form, &$form_state) {
 
     fonts_com_save_domains_in_project($project->ProjectKey, $new_domains);
 
-    drupal_goto('admin/config/user-interface/fontyourface/fonts_com/project');
+    backdrop_goto('admin/config/user-interface/fontyourface/fonts_com/project');
 
   } // if
 
@@ -735,7 +735,7 @@ function fonts_com_fontyourface_enable($font) {
 
   if ($project == '') {
 
-    drupal_set_message(t('Please !selectproject before enabling <i>@font</i>.', array('!selectproject' => l('select a project', 'admin/config/user-interface/fontyourface/fonts_com/project'), '@font' => $font->name)), 'error');
+    backdrop_set_message(t('Please !selectproject before enabling <i>@font</i>.', array('!selectproject' => l('select a project', 'admin/config/user-interface/fontyourface/fonts_com/project'), '@font' => $font->name)), 'error');
     return FALSE;
 
   } // if
@@ -764,7 +764,7 @@ function fonts_com_fontyourface_disable($font) {
 
   if ($project == '') {
 
-    drupal_set_message(t('Please !selectproject before disabling <i>@font</i>.', array('!selectproject' => l('select a project', 'admin/config/user-interface/fontyourface/fonts_com/project'), '@font' => $font->name)), 'error');
+    backdrop_set_message(t('Please !selectproject before disabling <i>@font</i>.', array('!selectproject' => l('select a project', 'admin/config/user-interface/fontyourface/fonts_com/project'), '@font' => $font->name)), 'error');
     return FALSE;
 
   } // if
@@ -892,7 +892,7 @@ function fonts_com_fontyourface_short_preview_text($font) {
 
   if (strpos($metadata['details']->FontLanguage, 'Latin') === FALSE) {
 
-    return drupal_substr($metadata['details']->FontPreviewTextLong, 0, 4);
+    return backdrop_substr($metadata['details']->FontPreviewTextLong, 0, 4);
 
   } // if
 
@@ -926,18 +926,18 @@ function fonts_com_fontyourface_status() {
  */
 function fonts_com_browse() {
 
-  drupal_set_title(t('Browse fonts: Fonts.com'));
+  backdrop_set_title(t('Browse fonts: Fonts.com'));
 
-  $breadcrumb = drupal_get_breadcrumb();
+  $breadcrumb = backdrop_get_breadcrumb();
   $breadcrumb[] = 'Fonts.com';
-  drupal_set_breadcrumb($breadcrumb);
+  backdrop_set_breadcrumb($breadcrumb);
 
-  drupal_add_css(drupal_get_path('module', 'fontyourface_ui') . '/css/fontyourface_ui.css');
-  drupal_add_js(drupal_get_path('module', 'fontyourface_ui') . '/js/browse.js');
+  backdrop_add_css(backdrop_get_path('module', 'fontyourface_ui') . '/css/fontyourface_ui.css');
+  backdrop_add_js(backdrop_get_path('module', 'fontyourface_ui') . '/js/browse.js');
 
-  $browse_form = drupal_get_form('fonts_com_browse_form');
+  $browse_form = backdrop_get_form('fonts_com_browse_form');
 
-  return '<div class="view view-fontyourface-browse view-id-fontyourface_browse view-display-id-page_1 view-dom-id-1"><div class="view-header"><div><p>' . fontyourface_ui_enabled_count() . '</p></div>' . fontyourface_ui_browse_tabs() . '</div>' . drupal_render($browse_form) . '</div>';
+  return '<div class="view view-fontyourface-browse view-id-fontyourface_browse view-display-id-page_1 view-dom-id-1"><div class="view-header"><div><p>' . fontyourface_ui_enabled_count() . '</p></div>' . fontyourface_ui_browse_tabs() . '</div>' . backdrop_render($browse_form) . '</div>';
 
 } // fonts_com_browse
 
@@ -962,7 +962,7 @@ function fonts_com_browse_form($form, &$form_state) {
 
   module_load_include('inc', 'fonts_com', 'api');
 
-  $destination = drupal_get_destination();
+  $destination = backdrop_get_destination();
   $per_page = 20;
   $start = 0;
 
@@ -1016,7 +1016,7 @@ function fonts_com_browse_form($form, &$form_state) {
   );
 
   $form['#attached']['css'] = array(
-    drupal_get_path('module', 'fonts_com') . '/css/browse.css',
+    backdrop_get_path('module', 'fonts_com') . '/css/browse.css',
   );
 
   $form['wrapper'] = array(
@@ -1185,12 +1185,12 @@ function fonts_com_browse_form($form, &$form_state) {
 
     if ($font->enabled) {
 
-      $enable_disable_link = l(t('Disable'), 'admin/appearance/fontyourface/disable/' . $font->fid . '?' . drupal_http_build_query($destination), array('attributes' => array('class' => 'disable-link')));
+      $enable_disable_link = l(t('Disable'), 'admin/appearance/fontyourface/disable/' . $font->fid . '?' . backdrop_http_build_query($destination), array('attributes' => array('class' => 'disable-link')));
 
     } // if
     else {
 
-      $enable_disable_link = l(t('Enable'), 'admin/appearance/fontyourface/enable/' . $font->fid . '?' . drupal_http_build_query($destination), array('attributes' => array('class' => 'enable-link')));
+      $enable_disable_link = l(t('Enable'), 'admin/appearance/fontyourface/enable/' . $font->fid . '?' . backdrop_http_build_query($destination), array('attributes' => array('class' => 'enable-link')));
 
     } // else
 
@@ -1278,7 +1278,7 @@ function fonts_com_ajax_render_alter(&$commands) {
     ),
   );
 
-  $rendered = drupal_render($styles);
+  $rendered = backdrop_render($styles);
 
   $commands[] = ajax_command_prepend('head', $rendered);
 

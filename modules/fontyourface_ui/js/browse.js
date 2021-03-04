@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.fontyourfaceBrowse = {
+  Backdrop.behaviors.fontyourfaceBrowse = {
 
     attach:function(context, settings) {
 
@@ -9,13 +9,13 @@
 
     } // attach
 
-  } // Drupal.behaviors.fontyourfaceAddForm
+  } // Backdrop.behaviors.fontyourfaceAddForm
 
   function fontyourfaceEnableClick() {
   
     var link = $(this);
     var fid = link.parent().attr('data-fid');
-    var enableUrl = Drupal.settings.basePath + '?q=admin/appearance/fontyourface/ajax/enable/' + fid;
+    var enableUrl = Backdrop.settings.basePath + '?q=admin/appearance/fontyourface/ajax/enable/' + fid;
 
     $('<span class="fontyourface-indicator"></span>').appendTo(this);
 
@@ -29,7 +29,7 @@
           .addClass('enabled-yes')
           .removeClass('enabled-no');
         link
-          .text(Drupal.t('Disable'))
+          .text(Backdrop.t('Disable'))
           .addClass('disable-link')
           .removeClass('enable-link')
           .unbind('click')
@@ -50,7 +50,7 @@
   
     var link = $(this);
     var fid = link.parent().attr('data-fid');
-    var disableUrl = Drupal.settings.basePath + '?q=admin/appearance/fontyourface/ajax/disable/';
+    var disableUrl = Backdrop.settings.basePath + '?q=admin/appearance/fontyourface/ajax/disable/';
 
     $('<span class="fontyourface-indicator"></span>').appendTo(this);
     
@@ -64,7 +64,7 @@
           .addClass('enabled-no')
           .removeClass('enabled-yes');
         link
-          .text(Drupal.t('Enable'))
+          .text(Backdrop.t('Enable'))
           .addClass('enable-link')
           .removeClass('disable-link')
           .unbind('click')
