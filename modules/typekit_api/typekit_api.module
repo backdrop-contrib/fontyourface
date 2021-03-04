@@ -9,8 +9,8 @@ function typekit_api_fontyourface_info() {
 
   return array(
     'name' => 'Typekit',
-    'url' => 'http://typekit.com/',
-    'base_path' => 'http://typekit.com/fonts/',
+    'url' => 'https://typekit.com/',
+    'base_path' => 'https://typekit.com/fonts/',
   );
 
   return $info;
@@ -51,7 +51,7 @@ function typekit_api_fontyourface_import() {
 
           $font = new stdClass;
           $font->name = $variant->name;
-          $font->url = 'http://typekit.com/fonts/' . $family_info->slug . '#' . $variant_id;
+          $font->url = 'https://typekit.com/fonts/' . $family_info->slug . '#' . $variant_id;
           $font->provider = 'typekit_api';
           $font->enabled = 1;
           $font->metadata = serialize($metadata);
@@ -60,7 +60,7 @@ function typekit_api_fontyourface_import() {
           $font->css_style = $variant->font_style;
           $font->css_weight = $variant->font_weight;
           $font->foundry = $variant->foundry->name;
-          $font->foundry_url = 'http://typekit.com/foundries/' . $variant->foundry->slug;
+          $font->foundry_url = 'https://typekit.com/foundries/' . $variant->foundry->slug;
           $font->tags = array();
 
           fontyourface_save_font($font);
@@ -102,7 +102,7 @@ function typekit_api_preprocess_html(&$vars) {
 
     if (count($kits) > 0) {
 
-      $base = 'http://use.typekit.com/';
+      $base = 'https://use.typekit.com/';
 
       if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
         $base = 'https://use.typekit.com/';

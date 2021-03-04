@@ -28,7 +28,7 @@ function fontyourface_wysiwyg_fontyourface_plugin() {
 
   $plugins['fontyourface'] = array(
     'title' => t('@font-your-face'),
-    'vendor url' => 'http://drupal.org/project/fontyourface',
+    'vendor url' => 'https://backdropcms.org/project/fontyourface',
     'icon file' => 'fontyourface.jpg',
     'icon title' => t('Set font'),
     'css path' => 'sites/default/files/fontyourface',

@@ -11,8 +11,8 @@
 function edge_fonts_fontyourface_info() {
   return array(
     'name' => 'Edge Fonts',
-    'url' => 'http://www.edgefonts.com/',
-    'base_path' => 'http://www.edgefonts.com/?font=',
+    'url' => 'https://fonts.adobe.com/',
+    'base_path' => 'https://edgewebfonts.adobe.com/?font=',
   );
 }
 
@@ -38,7 +38,7 @@ function edge_fonts_fontyourface_import() {
         'variant' => $fvd,
       );
       $font->metadata = serialize($metadata);
-      $font->url = 'http://www.edgefonts.com/?font=' . $family_name . ':' . $fvd . '#list-of-available-fonts';
+      $font->url = 'https://edgewebfonts.adobe.com/?font=' . $family_name . ':' . $fvd . '#list-of-available-fonts';
       $font->license = 'Font license';
       $font->license_url = $variant['license'];
       fontyourface_save_font($font);
@@ -52,9 +52,9 @@ function edge_fonts_fontyourface_import() {
 }
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function edge_fonts_preprocess_html(&$vars) {
+function edge_fonts_preprocess_page(&$vars) {
   if (!empty($vars['fontyourface'])) {
     $fonts = array();
     foreach ($vars['fontyourface'] as $active_font) {

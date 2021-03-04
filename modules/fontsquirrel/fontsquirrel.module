@@ -7,8 +7,8 @@ function fontsquirrel_fontyourface_info() {
 
   return array(
     'name' => 'Font Squirrel',
-    'url' => 'http://www.fontsquirrel.com/',
-    'base_path' => 'http://www.fontsquirrel.com/fonts/',
+    'url' => 'https://www.fontsquirrel.com/',
+    'base_path' => 'https://www.fontsquirrel.com/fonts/',
   );
 
 } // fontsquirrel_fonts_api_fontyourface_info
@@ -33,18 +33,18 @@ function fontsquirrel_fontyourface_preview($font, $text = NULL, $size = 18) {
 
     foreach ($sizes as $size) {
 
-      $output = '<img src="http://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=300&size=' . $size . '&text=' . urlencode($text) . '" />';
+      $output = '<img src="https://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=300&size=' . $size . '&text=' . urlencode($text) . '" />';
 
     } // foreach
 
-    $output .= '<div><img src="http://www.fontsquirrel.com/utils/makeSolotypeSample.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&case=all" /></div>';
+    $output .= '<div><img src="https://www.fontsquirrel.com/utils/makeSolotypeSample.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&case=all" /></div>';
 
   } // if
   else {
 
     // Display single size.
 
-    $output = '<img src="http://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=150&size=' . ($size - 10) . '&text=' . urlencode($text) . '" />';
+    $output = '<img src="https://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=150&size=' . ($size - 10) . '&text=' . urlencode($text) . '" />';
 
   } // else
 
@@ -103,7 +103,7 @@ function fontsquirrel_fontyourface_enable($font) {
 
   if ($font->css_family == '') {
 
-    $api_result = backdrop_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $metadata['path']);
+    $api_result = backdrop_http_request('https://www.fontsquirrel.com/api/familyinfo/' . $metadata['path']);
 
     if ($api_result->code == '200') {
 
@@ -144,7 +144,7 @@ function fontsquirrel_fontyourface_enable($font) {
 
     if (!file_exists(backdrop_realpath($zip_location))) {
 
-      $kit_url = 'http://www.fontsquirrel.com/fontfacekit/' . $metadata['path'];
+      $kit_url = 'https://www.fontsquirrel.com/fontfacekit/' . $metadata['path'];
 
       $kit_result = backdrop_http_request($kit_url);
 
@@ -206,7 +206,7 @@ function fontsquirrel_fontyourface_enable($font) {
         backdrop_set_message(t('Unable to unzip font %fontname at <code>@zip_location</code>. See !zipdocs to enable unzipping, or unzip the file manually and enable this font again.', array(
           '%fontname' => $font->name,
           '@zip_location' => $zip_location,
-          '!zipdocs' => l(t('PHP documentation on zip'), 'http://www.php.net/manual/en/zip.installation.php'),
+          '!zipdocs' => l(t('PHP documentation on zip'), 'https://www.php.net/manual/en/zip.installation.php'),
         )), 'error');
         $success = FALSE;
 
@@ -231,7 +231,7 @@ function fontsquirrel_fontyourface_import() {
 
   $families = array();
 
-  $api_result = backdrop_http_request('http://www.fontsquirrel.com/api/fontlist/all');
+  $api_result = backdrop_http_request('https://www.fontsquirrel.com/api/fontlist/all');
 
   if ($api_result->code == '200') {
 
@@ -253,12 +253,12 @@ function fontsquirrel_fontyourface_import() {
 
         $font = new StdClass;
         $font->name = $font_import->family_name;
-        $font->url = 'http://www.fontsquirrel.com/fonts/' . $font_import->family_urlname;
+        $font->url = 'https://www.fontsquirrel.com/fonts/' . $font_import->family_urlname;
         $font->provider = 'fontsquirrel';
         $font->foundry = $font_import->foundry_name;
-        $font->foundry_url = 'http://www.fontsquirrel.com/foundry/' . $font_import->foundry_urlname;
+        $font->foundry_url = 'https://www.fontsquirrel.com/foundry/' . $font_import->foundry_urlname;
         $font->license = 'See Font Squirrel license page';
-        $font->license_url = 'http://www.fontsquirrel.com/fonts/' . $font_import->family_urlname . '#eula';
+        $font->license_url = 'https://www.fontsquirrel.com/fonts/' . $font_import->family_urlname . '#eula';
         $font->tags = array($font_import->classification);
         $font->metadata = serialize($metadata);
 
@@ -303,7 +303,7 @@ function fontsquirrel_batch_import($families, &$context) {
 
   // Import variants of one family.
   $family = array_shift($context['sandbox']['families']);
-  $variants_raw = backdrop_http_request('http://www.fontsquirrel.com/api/familyinfo/' . $family);
+  $variants_raw = backdrop_http_request('https://www.fontsquirrel.com/api/familyinfo/' . $family);
   $variants = json_decode($variants_raw->data);
   foreach ($variants as $key => $variant) {
     $metadata = array(
@@ -313,7 +313,7 @@ function fontsquirrel_batch_import($families, &$context) {
     );
     $font = new StdClass;
     $font->name = $variant->family_name . ' ' . $variant->style_name;
-    $font->url = 'http://www.fontsquirrel.com/fonts/' . $variant->family_urlname;
+    $font->url = 'https://www.fontsquirrel.com/fonts/' . $variant->family_urlname;
     // To make URL unique, add a fake anchor, except for the first variant.
     if ($key != 0) {
       $font->url .= '#' . backdrop_strtolower($variant->fontface_name);
@@ -321,9 +321,9 @@ function fontsquirrel_batch_import($families, &$context) {
     $font->css_family = $variant->fontface_name;
     $font->provider = 'fontsquirrel';
     $font->foundry = $variant->foundry_name;
-    $font->foundry_url = 'http://www.fontsquirrel.com/foundry/' . $variant->foundry_urlname;
+    $font->foundry_url = 'https://www.fontsquirrel.com/foundry/' . $variant->foundry_urlname;
     $font->license = 'See Font Squirrel license page';
-    $font->license_url = 'http://www.fontsquirrel.com/fonts/' . $variant->family_urlname . '#eula';
+    $font->license_url = 'https://www.fontsquirrel.com/fonts/' . $variant->family_urlname . '#eula';
     $font->tags = array($variant->classification);
     $font->metadata = serialize($metadata);
     fontyourface_save_font($font);
