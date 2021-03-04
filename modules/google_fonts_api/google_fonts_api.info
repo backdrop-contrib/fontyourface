@@ -4,5 +4,3 @@ dependencies[] = fontyourface
 package = @font-your-face
 backdrop = 1.x
 type = module
-
-files[] = views/google_fonts_api.views_default.inc

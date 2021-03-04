@@ -481,9 +481,9 @@ function local_fonts_fontyourface_preview($font, $text = NULL, $size = 18) {
 }
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function local_fonts_preprocess_html(&$vars) {
+function local_fonts_preprocess_page(&$vars) {
 
   if (!empty($vars['fontyourface'])) {
 
@@ -507,4 +507,4 @@ function local_fonts_preprocess_html(&$vars) {
 
   } // if
 
-} // local_fonts_preprocess_html
+} // local_fonts_preprocess_page

@@ -12,7 +12,7 @@
   } // Backdrop.behaviors.fontyourfaceAddForm
 
   function fontyourfaceEnableClick() {
-  
+
     var link = $(this);
     var fid = link.parent().attr('data-fid');
     var enableUrl = Backdrop.settings.basePath + '?q=admin/appearance/fontyourface/ajax/enable/' + fid;
@@ -22,7 +22,7 @@
     $.post(enableUrl, {fid: fid}, function(json) {
 
       var font = link.parents('.font');
-            
+
       if (json.complete == '1') {
 
         font.find('.enabled-no')
@@ -43,17 +43,17 @@
     }, 'json');
 
     return false;
-  
+
   } // fontyourfaceEnableClick
-  
+
   function fontyourfaceDisableClick() {
-  
+
     var link = $(this);
     var fid = link.parent().attr('data-fid');
     var disableUrl = Backdrop.settings.basePath + '?q=admin/appearance/fontyourface/ajax/disable/';
 
     $('<span class="fontyourface-indicator"></span>').appendTo(this);
-    
+
     $.post(disableUrl, {fid: fid}, function(json) {
 
       var font = link.parents('.font');
@@ -71,14 +71,14 @@
           .click(fontyourfaceEnableClick);
 
       } // if
-      
+
       font.find('.fontyourface-indicator').remove();
       $('.view-header div').html(json.status);
 
     }, 'json');
 
     return false;
-  
+
   } // fontyourfaceDisableClick
 
 })(jQuery);

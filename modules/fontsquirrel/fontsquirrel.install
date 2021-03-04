@@ -10,8 +10,8 @@
  */
 function fontsquirrel_enable() {
 
-  // Set weight to 1 to ensure fontsquirrel_preprocess_html() is executed after
-  // fontyourface_preprocess_html(), which has weight of 0.
+  // Set weight to 1 to ensure fontsquirrel_preprocess_page() is executed after
+  // fontyourface_preprocess_page(), which has weight of 0.
   db_update('system')
     ->fields(array('weight' => 1))
     ->condition('name', 'fontsquirrel')

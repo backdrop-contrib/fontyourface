@@ -21,7 +21,7 @@ function typekit_api_fontyourface_info() {
  * Implements hook_fontyourface_import().
  */
 function typekit_api_fontyourface_import() {
-  
+
   $success = TRUE;
   $kits = typekit_api_get_kits();
 
@@ -76,14 +76,14 @@ function typekit_api_fontyourface_import() {
     }
   } // foreach
 
-  return $success; 
-  
+  return $success;
+
 } // typekit_api_fontyourface_import
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function typekit_api_preprocess_html(&$vars) {
+function typekit_api_preprocess_page(&$vars) {
 
   if (!empty($vars['fontyourface'])) {
 
@@ -120,7 +120,7 @@ function typekit_api_preprocess_html(&$vars) {
 
   } // if
 
-} // typekit_api_preprocess_html
+} // typekit_api_preprocess_page
 
 /**
  * Implements hook_form_alter().
@@ -137,20 +137,20 @@ function typekit_api_form_alter(&$form, &$form_state, $form_id) {
         '#type' => 'textfield',
         '#title' => t('TypeKit API token'),
         '#description' => t('Provided at ') . l('Typekit.com/account/tokens', 'https://typekit.com/account/tokens'),
-        '#default_value' => variable_get('typekit_api_token', ''),
+        '#default_value' => config_get('fontyourface.settings', 'typekit_api_token'),
       ),
       'typekit_api_save' => array(
         '#type' => 'submit',
         '#value' => t('Save TypeKit API token'),
       ),
     );
-    
+
     // Move the default update/import button to the Typekit fieldset
     if (isset($form['providers']['typekit_api_import'])) {
       $form['typekit_api']['typekit_api_import'] = $form['providers']['typekit_api_import'];
       unset($form['providers']['typekit_api_import']);
     }
-    
+
     $form['#submit'][] = 'typekit_api_token_submit';
 
   } // if
@@ -164,7 +164,7 @@ function typekit_api_token_submit($form, &$form_state) {
 
   if ($form_state['clicked_button']['#parents'][0] == 'typekit_api_save') {
 
-    variable_set('typekit_api_token', $form_state['values']['typekit_api_token']);
+    config_set('fontyourface.settings', 'typekit_api_token', $form_state['values']['typekit_api_token']);
     backdrop_set_message(t('Typeit API token updated.'));
 
   } // if
@@ -212,7 +212,7 @@ function typekit_api_fontyourface_preview($font, $text = NULL, $size = 18) {
  */
 function typekit_api_token_headers() {
 
-  return array('X-Typekit-Token' => variable_get('typekit_api_token', ''));
+  return array('X-Typekit-Token' => config_get('fontyourface.settings', 'typekit_api_token'));
 
 } // typekit_api_token_headers
 

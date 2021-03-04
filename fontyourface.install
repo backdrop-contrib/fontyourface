@@ -217,10 +217,12 @@ function fontyourface_update_1000() {
   $config->set('fontyourface_detailed_logging', update_variable_get('fontyourface_detailed_logging', FALSE));
   $config->set('fontyourface_load_everywhere', update_variable_get('fontyourface_load_everywhere', TRUE));
   $config->set('fontyourface_css_md5', update_variable_get('fontyourface_css_md5', ''));
+  $config->set('fontyourface_sample_text', update_variable_get('fontyourface_sample_text', 'The quick brown fox jumps over the lazy dog'));
   $config->save();
 
   update_variable_del('fontyourface_short_preview_text');
   update_variable_del('fontyourface_detailed_logging');
   update_variable_del('fontyourface_load_everywhere');
   update_variable_del('fontyourface_css_md5');
+  update_variable_del('fontyourface_sample_text');
 }

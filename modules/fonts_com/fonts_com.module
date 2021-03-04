@@ -163,9 +163,9 @@ function fonts_com_fontyourface_count() {
 } // fonts_com_fontyourface_count
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function fonts_com_preprocess_html(&$vars) {
+function fonts_com_preprocess_page(&$vars) {
 
   if (!empty($vars['fontyourface'])) {
 
@@ -236,7 +236,7 @@ function fonts_com_preprocess_html(&$vars) {
 
   } // if
 
-} // fonts_com_preprocess_html
+} // fonts_com_preprocess_page
 
 /**
  * Returns CSS for a given font.
@@ -333,7 +333,7 @@ function fonts_com_setup_form($form, &$form_state) {
     'fonts_com_token' => array(
       '#type' => 'textfield',
       '#description' => t('This is available at !url', array('!url' => l('https://webfonts.fonts.com/en-US/Account/AccountInformation', 'https://webfonts.fonts.com/en-US/Account/AccountInformation'))),
-      '#default_value' => variable_get('fonts_com_token', ''),
+      '#default_value' => config_get('fontsyourface.settings', 'fonts_com_token'),
     ),
     'fonts_com_key_save' => array(
       '#type' => 'submit',
@@ -417,7 +417,7 @@ function fonts_com_setup_form_submit($form, &$form_state) {
 
   if ($form_state['input']['op'] == t('Save')) {
 
-    variable_set('fonts_com_token', $form_state['values']['fonts_com_token']);
+    config_set('fontsyourface.settings', 'fonts_com_token', $form_state['values']['fonts_com_token']);
     backdrop_set_message(t('Fonts.com key saved.'));
 
   } // if
@@ -427,7 +427,7 @@ function fonts_com_setup_form_submit($form, &$form_state) {
 
     if ($key) {
 
-      variable_set('fonts_com_token', $key);
+      config_set('fontsyourface.settings', 'fonts_com_token', $key);
       backdrop_set_message(t('Fonts.com key saved.'));
 
     } // if
@@ -591,7 +591,7 @@ function fonts_com_project_info_form($project_id) {
     '#description' => t('Font updates (enabled status, CSS selectors) affect the active project.'),
   );
 
-  if (variable_get('fonts_com_project', '') == $project_id) {
+  if (config_get('fontsyourface.settings', 'fonts_com_project') == $project_id) {
     $form['active']['#default_value'] = 1;
   } // if
   else {
@@ -689,19 +689,22 @@ function fonts_com_project_edit_form_submit($form, &$form_state) {
   } // else
 
   if (!$save_needed || fonts_com_save_project($project)) {
+    $config = config('fontyourface.settings');
 
     backdrop_set_message(t('Project <i>@project</i> saved.', array('@project' => $project->ProjectName)));
 
     if ($values['active']) {
 
-      variable_set('fonts_com_project', $project->ProjectKey);
+      $config->set('fonts_com_project', $project->ProjectKey);
+      $config->save();
       fonts_com_import_from_project($project->ProjectKey);
       fonts_com_enable_from_active_project();
 
     } // if
-    else if ($values['active'] === 0 && $values['project'] == variable_get('fonts_com_project', '')) {
+    else if ($values['active'] === 0 && $values['project'] == $config->get('fonts_com_project')) {
 
-      variable_set('fonts_com_project', '');
+      $config->set('fonts_com_project', '');
+      $config->save();
 
     } // else if
 
@@ -730,7 +733,7 @@ function fonts_com_fontyourface_enable($font) {
 
   module_load_include('inc', 'fonts_com', 'api');
 
-  $project = variable_get('fonts_com_project', '');
+  $project = config_get('fontsyourface.settings', 'fonts_com_project');
   $metadata = unserialize($font->metadata);
 
   if ($project == '') {
@@ -759,7 +762,7 @@ function fonts_com_fontyourface_disable($font) {
 
   module_load_include('inc', 'fonts_com', 'api');
 
-  $project = variable_get('fonts_com_project', '');
+  $project = config_get('fontsyourface.settings', 'fonts_com_project');
   $metadata = unserialize($font->metadata);
 
   if ($project == '') {
@@ -811,7 +814,7 @@ function fonts_com_enable_from_active_project() {
   // Gets all fonts in active project.
 
   $fids_to_enable = array();
-  $project_id = variable_get('fonts_com_project', '');
+  $project_id = config_get('fontsyourface.settings', 'fonts_com_project');
   $selectors_by_font_id = array();
 
   if ($project_id != '') {
@@ -875,7 +878,7 @@ function fonts_com_fontyourface_selector_update($font) {
 
   module_load_include('inc', 'fonts_com', 'api');
 
-  $project_id = variable_get('fonts_com_project', '');
+  $project_id = config_get('fontsyourface.settings', 'fonts_com_project');
   $metadata = unserialize($font->metadata);
   $font_id = $metadata['details']->FontID;
 
@@ -896,7 +899,7 @@ function fonts_com_fontyourface_short_preview_text($font) {
 
   } // if
 
-  return variable_get('fontyourface_short_preview_text', 'AaGg');
+  return config_get('fontsyourface.settings', 'fontyourface_short_preview_text');
 
 } // fonts_com_fontyourface_short_preview_text
 
@@ -905,7 +908,7 @@ function fonts_com_fontyourface_short_preview_text($font) {
  */
 function fonts_com_fontyourface_status() {
 
-  $project_id = variable_get('fonts_com_project', '');
+  $project_id = config_get('fontsyourface.settings', 'fonts_com_project');
 
   if ($project_id) {
 
@@ -1353,7 +1356,7 @@ function fonts_com_filter_choices($current_filters = FALSE) {
 
   if (!$current_filters) {
 
-    $choices =  variable_get('fonts_com_filter_choices', array());
+    $choices =  state_get('fonts_com_filter_choices', array());
 
     if (!isset($choices['updated']) || REQUEST_TIME - $choices['updated'] > 4 * 60 * 60) {
 
@@ -1372,7 +1375,7 @@ function fonts_com_filter_choices($current_filters = FALSE) {
 
       $choices['updated'] = REQUEST_TIME;
 
-      variable_set('fonts_com_filter_choices', $choices);
+      state_set('fonts_com_filter_choices', $choices);
 
     } // if
 

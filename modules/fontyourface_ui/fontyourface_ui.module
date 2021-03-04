@@ -556,6 +556,8 @@ function fontyourface_ui_views_handlers() {
  */
 function fontyourface_ui_settings_form($form, &$form_state) {
 
+  $config = config('fontyourface.settings');
+
   $form = array(
     'providers' => array(
       '#type' => 'fieldset',
@@ -566,13 +568,13 @@ function fontyourface_ui_settings_form($form, &$form_state) {
       '#title' => t('Advanced'),
       'load_everywhere' => array(
         '#type' => 'checkbox',
-        '#default_value' => variable_get('fontyourface_load_everywhere', TRUE),
+        '#default_value' => $config->get('fontyourface_load_everywhere'),
         '#title' => t('Load fonts in all themes, including admin themes'),
         '#description' => t('If unchecked, fonts will be loaded only in the default theme.'),
       ),
       'detailed_logs' => array(
         '#type' => 'checkbox',
-        '#default_value' => variable_get('fontyourface_detailed_logging', FALSE),
+        '#default_value' => $config->get('fontyourface_detailed_logging'),
         '#title' => t('Keep detailed watchdog logs'),
         '#description' => t("Don't leave this on when testing is complete. It will make everything run a bit slower."),
       ),
@@ -586,7 +588,7 @@ function fontyourface_ui_settings_form($form, &$form_state) {
       '#title' => t('Preview'),
       'short_preview_text' => array(
         '#type' => 'textfield',
-        '#default_value' => variable_get('fontyourface_short_preview_text', 'AaGg'),
+        '#default_value' => $config->get('fontyourface_short_preview_text'),
         '#title' => t('Default short preview text'),
         '#description' => t('Provider-specific submodules may supply their own preview text, overriding this default.'),
       ),
@@ -656,15 +658,18 @@ function fontyourface_ui_settings_form($form, &$form_state) {
  * Handles provider imports.
  */
 function fontyourface_ui_settings_form_submit($form, &$form_state) {
+  $config = config('fontyourface.settings');
 
   if ($form_state['clicked_button']['#array_parents'][1] == 'update_advanced') {
-    variable_set('fontyourface_detailed_logging', $form_state['values']['detailed_logs']);
-    variable_set('fontyourface_load_everywhere', $form_state['values']['load_everywhere']);
+    $config->set('fontyourface_detailed_logging', $form_state['values']['detailed_logs']);
+    $config->set('fontyourface_load_everywhere', $form_state['values']['load_everywhere']);
+    $config->save();
     return;
   }
 
   if ($form_state['clicked_button']['#array_parents'][1] == 'update_preview') {
-    variable_set('fontyourface_short_preview_text', $form_state['values']['short_preview_text']);
+    $config->set('fontyourface_short_preview_text', $form_state['values']['short_preview_text']);
+    $config->save();
     return;
   }
 
@@ -1096,6 +1101,7 @@ function fontyourface_ui_admin_edit_form_title($fid) {
  * Edit form changes a single font, including CSS selector and enabled status.
  */
 function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
+  $config = config('fontyourface.settings');
 
   backdrop_add_js(backdrop_get_path('module', 'fontyourface_ui') . '/js/add_form.js');
 
@@ -1172,7 +1178,7 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
   $view_function = $font->provider . '_fontyourface_preview';
 
   if (function_exists($view_function)) {
-    $view = $view_function($font, variable_get('fontyourface_sample_text', 'The quick brown fox jumps over the lazy dog'), 'all');
+    $view = $view_function($font, $config->get('fontyourface_sample_text'), 'all');
   } // if
 
   $form += array(
@@ -1184,7 +1190,7 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
       'sample_text' => array(
         '#type' => 'textfield',
         '#title' => t('Sample text'),
-        '#default_value' => variable_get('fontyourface_sample_text', 'The quick brown fox jumps over the lazy dog'),
+        '#default_value' => $config->get('fontyourface_sample_text'),
         '#size' => 60,
       ),
       'font_view' => array(

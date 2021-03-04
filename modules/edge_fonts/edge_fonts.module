@@ -64,7 +64,8 @@ function edge_fonts_preprocess_page(&$vars) {
       }
     }
     if (count($fonts) > 0) {
-      if (variable_get('edge_fonts_base', 'naked') == 'naked') {
+      $config = config('fontyourface.settings');
+      if ($config->get('edge_fonts_base') == 'naked') {
         $base = '//use.edgefonts.net/';
       }
       elseif (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
@@ -74,7 +75,7 @@ function edge_fonts_preprocess_page(&$vars) {
         $base = 'http://use.edgefonts.net/';
       }
       $families = array();
-      $all_subsets = (variable_get('edge_fonts_subsets', 'default') == 'all') ? ':all' : '';
+      $all_subsets = ($config->get('edge_fonts_subsets') == 'all') ? ':all' : '';
       foreach ($fonts as $family => $variants) {
         $families[] = $family . ':' . implode(',', $variants) . $all_subsets;
       }
@@ -110,6 +111,7 @@ function edge_fonts_fontyourface_preview($font, $text = NULL, $size = 18) {
  * Implements hook_form_FORM_ID_alter().
  */
 function edge_fonts_form_fontyourface_ui_settings_form_alter(&$form, &$form_state, $form_id) {
+  $config = config('fontyourface.settings');
   $form['edge_fonts'] = array(
     '#type' => 'fieldset',
     '#title' => 'Edge Fonts',
@@ -121,7 +123,7 @@ function edge_fonts_form_fontyourface_ui_settings_form_alter(&$form, &$form_stat
         'naked' => t('// (schema-less - recommended by the provider)'),
         'http' => t('http:// or https:// (ask the server)'),
       ),
-      '#default_value' => variable_get('edge_fonts_base', 'naked'),
+      '#default_value' => $config->get('edge_fonts_base'),
     ),
     'edge_fonts_subsets' => array(
       '#type' => 'radios',
@@ -130,7 +132,7 @@ function edge_fonts_form_fontyourface_ui_settings_form_alter(&$form, &$form_stat
         'default' => t('Default'),
         'all' => t('All'),
       ),
-      '#default_value' => variable_get('edge_fonts_subsets', 'default'),
+      '#default_value' => $config->get('edge_fonts_subsets'),
     ),
     'edge_fonts_save_settings' => array(
       '#type' => 'submit',
@@ -150,7 +152,9 @@ function edge_fonts_form_fontyourface_ui_settings_form_alter(&$form, &$form_stat
  */
 function edge_fonts_save_settings($form, &$form_state) {
   if ($form_state['clicked_button']['#parents'][0] == 'edge_fonts_save_settings') {
-    variable_set('edge_fonts_base', $form_state['values']['edge_fonts_base']);
-    variable_set('edge_fonts_subsets', $form_state['values']['edge_fonts_subsets']);
+    $config = config('fontyourface.settings');
+    $config->set('edge_fonts_base', $form_state['values']['edge_fonts_base']);
+    $config->set('edge_fonts_subsets', $form_state['values']['edge_fonts_subsets']);
+    $config->save();
   }
 }

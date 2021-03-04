@@ -82,7 +82,7 @@
           background: #fff;
           height: auto;
         }
-        
+
         .view-fontyourface-browse li:hover div.fontyourface-header.enabled-yes h4 {
           background: #dfd;
         }
@@ -113,7 +113,7 @@
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
-    
+
     border: 1px solid #ccc;
     display: inline-block;
     height: 10px;

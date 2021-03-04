@@ -6,11 +6,21 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function edge_fonts_install() {
+  $config = config('fontyourface.settings');
+  $config->set('edge_fonts_base', 'naked');
+  $config->set('edge_fonts_subsets', 'default');
+  $config->save();
+}
+
+/**
  * Implements hook_enable().
  */
 function edge_fonts_enable() {
-  // Set weight to 1 to ensure edge_fonts_preprocess_html() is executed after
-  // fontyourface_preprocess_html(), which has weight of 0.
+  // Set weight to 1 to ensure edge_fonts_preprocess_page() is executed after
+  // fontyourface_preprocess_page(), which has weight of 0.
   db_update('system')
     ->fields(array('weight' => 1))
     ->condition('name', 'edge_fonts')
@@ -30,6 +40,21 @@ function edge_fonts_disable() {
  * Implements hook_uninstall().
  */
 function edge_fonts_uninstall() {
-  variable_del('edge_fonts_base');
-  variable_del('edge_fonts_subsets');
+  $config = config('fontyourface.settings');
+  $config->clear('edge_fonts_base');
+  $config->clear('edge_fonts_subsets');
+  $config->save();
+}
+
+/**
+ * Convert variables to config.
+ */
+function edge_fonts_update_1000() {
+  $config = config('fontyourface.settings');
+  $config->set('edge_fonts_base', update_variable_get('edge_fonts_base', 'naked'));
+  $config->set('edge_fonts_subsets', update_variable_get('edge_fonts_subsets', 'default'));
+  $config->save();
+
+  update_variable_del('edge_fonts_base');
+  update_variable_del('edge_fonts_subsets');
 }

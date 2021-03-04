@@ -771,7 +771,7 @@ function fonts_com_publish() {
  */
 function fonts_com_api_headers($path) {
 
-  $fonts_com_token = variable_get('fonts_com_token', '');
+  $fonts_com_token = config_get('fontyourface.settings', 'fonts_com_token');
 
   if (empty($fonts_com_token)) {
     return array();

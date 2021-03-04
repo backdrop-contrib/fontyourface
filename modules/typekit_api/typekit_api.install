@@ -6,12 +6,19 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function typekit_install() {
+  config_set('fontyourface.settings', 'typekit_api_token', '');
+}
+
+/**
  * Implements hook_enable().
  */
 function typekit_api_enable() {
 
-  // Set weight to 1 to ensure typekit_api_preprocess_html() is executed after
-  // fontyourface_preprocess_html(), which has weight of 0.
+  // Set weight to 1 to ensure typekit_api_preprocess_page() is executed after
+  // fontyourface_preprocess_page(), which has weight of 0.
   db_update('system')
     ->fields(array('weight' => 1))
     ->condition('name', 'typekit_api')
@@ -33,6 +40,18 @@ function typekit_api_disable() {
  */
 function typekit_api_uninstall() {
 
-  variable_del('typekit_api_token');
+  config_clear('fontyourface.settings', 'typekit_api_token');
 
 } // typekit_api_uninstall
+
+/**
+ * Convert variables to config.
+ */
+function typekit_update_1000() {
+  // Migrate variables to config.
+  $config = config('fontyourface.settings');
+  $config->set('typekit_api_token', update_variable_get('typekit_api_token', ''));
+  $config->save();
+
+  update_variable_del('typekit_api_token');
+}

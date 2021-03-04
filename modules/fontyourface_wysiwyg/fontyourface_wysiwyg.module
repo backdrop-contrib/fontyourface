@@ -10,11 +10,11 @@ function fontyourface_wysiwyg_preprocess_page(&$vars) {
 
   $css = fontyourface_wysiwyg_generate_css($fonts);
   $css_md5 = md5($css);
-  
-  if ($css_md5 != variable_get('fontyourface_wysiwyg_css_md5', '')) {
+
+  if ($css_md5 != state_get('fontyourface_wysiwyg_css_md5', '')) {
 
     fontyourface_wysiwyg_rewrite_css($css);
-    variable_set('fontyourface_wysiwyg_css_md5', $css_md5);
+    state_set('fontyourface_wysiwyg_css_md5', $css_md5);
 
   } // if
 
@@ -28,7 +28,7 @@ function fontyourface_wysiwyg_preprocess_page(&$vars) {
  * Generates CSS.
  */
 function fontyourface_wysiwyg_generate_css($fonts = FALSE) {
-  
+
   // Get font list.
 
   if (!$fonts) {
@@ -66,7 +66,7 @@ function fontyourface_wysiwyg_rewrite_css($css) {
   if (file_prepare_directory($destination_directory, FILE_CREATE_DIRECTORY)) {
     file_unmanaged_save_data($css, $destination, FILE_EXISTS_REPLACE);
   } // if
-  
+
 } // fontyourface_wysiwyg_rewrite_css
 
 /**

@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * @fontyourface UI module install/uninstall hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function fontyourface_ui_uninstall() {
+  // Remove views
+  // We need to be explicit so we don't remove a user's custom views.
+  $names = array(
+    'views.view.fontyourface_browse',
+  );
+
+  foreach ($names as $config_name) {
+    $config = config($config_name);
+    $config->delete();
+  }
+  // Clear admin bar cache to remove views from menu
+  cache('admin_bar')->flush();
+}
+
+/**
+ * Create fontyourface_browse view if it doesn't exist already.
+ */
+function fontyourface_ui_update_1000() {
+
+  // See if there is already a fontyourface_browse view on this site.
+  $config = config('views.view.fontyourface_browse');
+  if ($config->isNew()) {
+    // If not, create the new fontyourface_browse view.
+    $path = backdrop_get_path('module', 'fontyourface_ui') . '/config/';
+    $contents = file_get_contents($path . 'views.view.fontyourface_browse.json');
+    $data = json_decode($contents, true);
+    $config->setData($data);
+    $config->save();
+  }
+}

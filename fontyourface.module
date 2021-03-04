@@ -5,8 +5,8 @@
  */
 function fontyourface_config_info() {
   $prefixes['fontyourface.settings'] = array(
-    'label' => t('Core settings'),
-    'group' => t('Font Your Face'),
+    'label' => t('@font-your-face settings'),
+    'group' => t('Configuration'),
   );
   return $prefixes;
 }
@@ -181,10 +181,10 @@ function fontyourface_preprocess_page(&$vars) {
   $css = fontyourface_generate_css($fonts);
   $css_md5 = md5($css);
 
-  if ($css_md5 != config_get('fontyourface.settings', 'fontyourface_css_md5')) {
+  if ($css_md5 != state_get('fontyourface_css_md5', '')) {
 
     fontyourface_rewrite_css($css);
-    config_set('fontyourface.settings', 'fontyourface_css_md5', $css_md5);
+    state_set('fontyourface_css_md5', $css_md5);
 
   } // if
 
@@ -194,7 +194,7 @@ function fontyourface_preprocess_page(&$vars) {
 
   $vars['fontyourface'] = $fonts;
 
-} // fontyourface_preprocess_html
+} // fontyourface_preprocess_page
 
 /**
  * Generates CSS.
@@ -549,7 +549,7 @@ function fontyourface_short_preview_text($font) {
 
 /**
  * Manages registry of fonts used on current page, to provide
- * list to fontyourface_preprocess_html().
+ * list to fontyourface_preprocess_page().
  */
 function fontyourface_font_registry($font = FALSE, $clear = FALSE) {
 
@@ -717,15 +717,15 @@ function fontyourface_ajax_render_alter(&$commands) {
 
   backdrop_static_reset('backdrop_add_css');
 
-  // Get all the CSS that would otherwise be added in preprocess_html functions.
+  // Get all the CSS that would otherwise be added in preprocess_page functions.
 
   $vars = array();
 
-  fontyourface_preprocess_html($vars);
+  fontyourface_preprocess_page($vars);
 
   foreach (module_implements('fontyourface_info') as $provider) {
 
-    $function = $provider . '_preprocess_html';
+    $function = $provider . '_preprocess_page';
 
     if (function_exists($function)) {
       $function($vars);

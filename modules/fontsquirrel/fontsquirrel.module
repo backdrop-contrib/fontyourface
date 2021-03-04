@@ -53,9 +53,9 @@ function fontsquirrel_fontyourface_preview($font, $text = NULL, $size = 18) {
 } // fontsquirrel_fontyourface_preview
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function fontsquirrel_preprocess_html(&$vars) {
+function fontsquirrel_preprocess_page(&$vars) {
   if (!empty($vars['fontyourface'])) {
 
     $paths = array();
@@ -91,7 +91,7 @@ function fontsquirrel_preprocess_html(&$vars) {
 
   } // if
 
-} // fontsquirrel_preprocess_html
+} // fontsquirrel_preprocess_page
 
 /**
  * Implements hook_fontyourface_enable().

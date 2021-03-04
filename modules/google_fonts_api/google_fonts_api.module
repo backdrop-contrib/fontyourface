@@ -52,9 +52,9 @@ function google_fonts_api_fontyourface_preview($font, $text = NULL, $size = 18) 
 } // google_fonts_api_fontyourface_preview
 
 /**
- * Implements template_preprocess_html().
+ * Implements template_preprocess_page().
  */
-function google_fonts_api_preprocess_html(&$vars) {
+function google_fonts_api_preprocess_page(&$vars) {
   if (!empty($vars['fontyourface'])) {
 
     $paths = array();
@@ -126,7 +126,7 @@ function google_fonts_api_preprocess_html(&$vars) {
 
   } // if
 
-} // google_fonts_api_preprocess_html
+} // google_fonts_api_preprocess_page
 
 /**
  * Implements hook_fontyourface_import().
@@ -142,7 +142,7 @@ function google_fonts_api_fontyourface_import() {
   $success = TRUE;
   $fonts = array();
 
-  $result = backdrop_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=' . config_get('google_fonts_api.settings', 'google_fonts_api_key'));
+  $result = backdrop_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=' . config_get('fontyourface.settings', 'google_fonts_api_key'));
 
   fontyourface_log('backdrop_http_request response: @response', array('@response' => print_r($result, TRUE)));
 

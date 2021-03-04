@@ -1,10 +1,14 @@
 <?php
+/**
+ * @file
+ * Install and uninstall hooks.
+ */
 
 /**
- * Implements hook_uninstall().
+ * Convert variables to state.
  */
-function fontyourface_wysiwyg_uninstall() {
+function fontyourface_wysiwyg_update_1000() {
+  state_set('fontyourface_wysiwyg_css_md5', update_variable_get('fontyourface_wysiwyg_css_md5', ''));
 
-  variable_del('fontyourface_wysiwyg_css_md5');  
-  
-} // fontyourface_wysiwyg_uninstall
+  update_variable_del('fontyourface_wysiwyg_css_md5');
+}
