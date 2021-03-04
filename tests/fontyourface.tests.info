@@ -2,3 +2,4 @@
 name = Save font
 description = Saves new font and updates existing font.
 group = @font-your-face
+file = fontyourface.test
