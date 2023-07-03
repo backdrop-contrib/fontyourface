@@ -701,11 +701,11 @@ function fontyourface_log($message, $arguments) {
  * Parse the info file of the currently used theme
  */
 function fontyourface_parse_theme_info_file() {
+  global $theme;
 
   $font_declarations = array();
 
-  $theme_default = config_get('system.core', 'theme_default');
-  $info = backdrop_parse_info_file(backdrop_get_path('theme', $theme_default) . '/' . $theme_default . '.info');
+  $info = backdrop_parse_info_file(backdrop_get_path('theme', $theme) . '/' . $theme . '.info');
 
   if (isset($info['fonts'])) {
     $font_declarations = $info['fonts'];
