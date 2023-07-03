@@ -24,13 +24,13 @@ class views_handler_filter_fontyourface_provider extends views_handler_filter_in
         $provider = $info_function();
         $options[$module] = $provider['name'];
 
-      } // foreach
+      }
 
       asort($options);
       $this->value_options = $options;
 
-    } // if
+    }
 
-  } // get_value_options
+  }
 
-} // views_handler_filter_fontyourface_provider
+}

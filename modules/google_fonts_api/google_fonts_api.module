@@ -13,7 +13,7 @@ function google_fonts_api_fontyourface_info() {
 
   return $info;
 
-} // google_fonts_api_fontyourface_info
+}
 
 /**
  * Implements hook_fontyourface_preview().
@@ -24,7 +24,7 @@ function google_fonts_api_fontyourface_preview($font, $text = NULL, $size = 18) 
 
   if ($text == NULL) {
     $text = $font->name;
-  } // if
+  }
 
   if ($size == 'all') {
 
@@ -36,20 +36,20 @@ function google_fonts_api_fontyourface_preview($font, $text = NULL, $size = 18) 
 
       $output .= '<div style="' . fontyourface_font_css($font) . ' font-size: ' . $size . 'px; line-height: ' . $size . 'px;">' . $text . '</div>';
 
-    } // foreach
+    }
 
-  } // if
+  }
   else {
 
     // Display single size.
 
     $output = '<span style="' . fontyourface_font_css($font) . ' font-size: ' . $size . 'px; line-height: ' . $size . 'px;">' . $text . '</span>';
 
-  } // else
+  }
 
   return $output;
 
-} // google_fonts_api_fontyourface_preview
+}
 
 /**
  * Implements template_preprocess_page().
@@ -73,18 +73,18 @@ function google_fonts_api_preprocess_page(&$vars) {
 
         if (!isset($paths[$path_parts[0]])) {
           $paths[$path_parts[0]] = array();
-        } // if
+        }
 
         if (count($path_parts) > 1) {
           $paths[$path_parts[0]][$path_parts[1]] = $path_parts[1];
-        } // if
+        }
         else {
           $paths[$path_parts[0]]['regular'] = 'regular';
-        } // else
+        }
 
-      } // if
+      }
 
-    } // foreach
+    }
 
     if (count($paths) > 0) {
 
@@ -92,7 +92,7 @@ function google_fonts_api_preprocess_page(&$vars) {
 
       foreach ($paths as $family => $variants) {
         $families[$family] = urlencode($family) . ':' . implode(',', $variants);
-      } // foreach
+      }
 
       if (module_exists('google_webfont_loader_api')) {
 
@@ -105,28 +105,28 @@ function google_fonts_api_preprocess_page(&$vars) {
 
           _google_webfont_loader_api_load_font($font_info);
 
-        } // foreach
+        }
 
-      } // if
+      }
       else {
 
         $base = 'https://fonts.googleapis.com/css?family=';
 
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
           $base = 'https://fonts.googleapis.com/css?family=';
-        } // if
+        }
 
         $url = $base . implode('|', $families) . '&subset=' . implode(',', $all_subsets);
 
         fontyourface_add_css_in_preprocess($vars, $url, 'remote');
 
-      } // else
+      }
 
-    } // if
+    }
 
-  } // if
+  }
 
-} // google_fonts_api_preprocess_page
+}
 
 /**
  * Implements hook_fontyourface_import().
@@ -205,9 +205,9 @@ function google_fonts_api_views_api() {
       'path' => backdrop_get_path('module', 'google_fonts_api') . '/views',
     );
 
-  } // if
+  }
 
-} // google_fonts_api_views_api
+}
 
 /**
  * Converts the Google Fonts API JSON results to a generic Fonts object array
@@ -252,14 +252,14 @@ function _google_fonts_api_convert_api_results($json_font_list) {
               // Variant is a number, like 400
               $css_style = 'normal';
               $css_weight = $json_font_variant;
-            } //if
+            }
             elseif (is_numeric(substr($json_font_variant, 0, 3))){
               // Variant is a combined string of number and string, like 400italic
               // The numberic part is always three characters long, so we can split it easily
               $css_style = substr($json_font_variant, 3);
               $css_weight = substr($json_font_variant, 0, 3);
-            } //elseif
-        } //switch
+            }
+        }
 
         $fonts[$font_id] = new stdClass;
         $fonts[$font_id]->name = $font_id;
@@ -279,13 +279,13 @@ function _google_fonts_api_convert_api_results($json_font_list) {
         $tag_object->name = $json_font_subset;
         $fonts[$font_id]->tags[] = $tag_object;
 
-      } //foreach
-    } //foreach
-  } //foreach
+      }
+    }
+  }
 
   return $fonts;
 
-} // _google_fonts_api_convert_api_results
+}
 
 
 /**

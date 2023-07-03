@@ -23,7 +23,7 @@ var fontyourfaceSampleMarkup = '';
           markup = markup.split(fontyourfaceSampleText).join(updatedText);
           markup = markup.split(fontyourfaceEncodeURI(fontyourfaceSampleText)).join(fontyourfaceEncodeURI(updatedText));
 
-        } // if
+        }
 
         $('.fontyourface-view').html(markup);
 
@@ -40,19 +40,19 @@ var fontyourfaceSampleMarkup = '';
           select.find('option[value=' + selector + ']').attr('selected', true);
           input.hide();
 
-        } // if
+        }
         else {
 
           select.find('option[value="-- other --"]').attr('selected', true);
           input.show();
 
-        } // else
+        }
 
-      } // if
+      }
 
-    } // attach
+    }
 
-  } // Backdrop.behaviors.fontyourfaceAddForm
+  }
 
   function fontyourfaceCssSelectChange() {
 
@@ -60,13 +60,13 @@ var fontyourfaceSampleMarkup = '';
 
     if (selector == '') {
       $('#edit-css').show();
-    } // if
+    }
     else {
       $('#edit-css').val(selector);
       $('#edit-css').hide();
-    } // else
+    }
 
-  } // fontyourfaceCssSelectChange
+  }
 
   function fontyourfaceEncodeURI(text) {
 
@@ -74,6 +74,6 @@ var fontyourfaceSampleMarkup = '';
       .replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28')
       .replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
 
-  } // fontyourfaceEncodeURI
+  }
 
 })(jQuery);

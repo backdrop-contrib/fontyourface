@@ -20,7 +20,7 @@ function fontsquirrel_enable() {
   // Import/update fonts
   fontyourface_import_fonts('fontsquirrel');
 
-} // fontsquirrel_enable
+}
 
 /**
  * Implements hook_disable().
@@ -29,4 +29,4 @@ function fontsquirrel_disable() {
 
   fontyourface_provider_disable('fontsquirrel');
 
-} // fontsquirrel_disable
+}

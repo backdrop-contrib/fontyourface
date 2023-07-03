@@ -16,7 +16,7 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
     parent::init($view, $options);
     $this->additional_fields['fid'] = array('table' => 'fontyourface_font', 'field' => 'fid');
 
-  } // init
+  }
 
   function option_definition() {
 
@@ -26,7 +26,7 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
 
     return $options;
 
-  } // option_definition
+  }
 
   /**
    * Provide "link to term" option.
@@ -41,7 +41,7 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
       '#default_value' => !empty($this->options['link_to_tag']),
     );
 
-  } // options_form
+  }
 
   /**
    * Add this term to the query
@@ -50,7 +50,7 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
 
     $this->add_additional_fields();
 
-  } // query
+  }
 
   function pre_render(&$values) {
 
@@ -60,8 +60,8 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
     foreach ($values as $result) {
       if (!empty($result->{$this->aliases['fid']})) {
         $fids[] = $result->{$this->aliases['fid']};
-      } // if
-    } // foreach
+      }
+    }
 
     if ($fids) {
 
@@ -82,25 +82,25 @@ class views_handler_field_fontyourface_tag_font_tid extends views_handler_field_
 
         if (isset($tag->fid)) {
           $this->items[$tag->font_fid][$tag->tid]['fid'] = $tag->fid;
-        } // if
+        }
 
         if (!empty($this->options['link_to_tag'])) {
 
           $this->items[$tag->font_fid][$tag->tid]['make_link'] = TRUE;
           $this->items[$tag->font_fid][$tag->tid]['path'] = 'admin/appearance/fontyourface/browse?tid[]=' . $tag->tid;
 
-        } // if
+        }
 
-      } // foreach
+      }
 
-    } // if
+    }
 
-  } // pre_render
+  }
 
   function render_item($count, $item) {
 
     return $item['name'];
 
-  } // render_item
+  }
 
-} // views_handler_field_fontyourface_tag_font_tid
+}

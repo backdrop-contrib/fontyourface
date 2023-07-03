@@ -19,10 +19,10 @@ class views_handler_field_fontyourface_provider extends views_handler_field {
       $provider = $info_function();
       return check_plain($provider['name']);
 
-    } // if
+    }
 
     return $values->{$this->field_alias};
 
-  } // render
+  }
 
-} // views_handler_field_fontyourface_provider
+}

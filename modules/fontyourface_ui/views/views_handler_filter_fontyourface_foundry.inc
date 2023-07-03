@@ -24,13 +24,13 @@ class views_handler_filter_fontyourface_foundry extends views_handler_filter_in_
 
       foreach ($foundries as $foundry) {
         $options[$foundry->foundry] = $foundry->foundry;
-      } // foreach
+      }
 
       asort($options);
       $this->value_options = $options;
 
-    } // if
+    }
 
-  } // get_value_options
+  }
 
-} // views_handler_filter_fontyourface_foundry
+}

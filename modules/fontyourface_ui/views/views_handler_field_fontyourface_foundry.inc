@@ -19,9 +19,9 @@ class views_handler_field_fontyourface_foundry extends views_handler_field {
 
     if (!empty($this->options['link_to_foundry'])) {
       $this->additional_fields['foundry_url'] = 'foundry_url';
-    } // if
+    }
 
-  } // init
+  }
 
   function option_definition() {
 
@@ -30,7 +30,7 @@ class views_handler_field_fontyourface_foundry extends views_handler_field {
 
     return $options;
 
-  } // option_definition
+  }
 
   /**
    * Provide link to font option
@@ -49,7 +49,7 @@ class views_handler_field_fontyourface_foundry extends views_handler_field {
       '#default_value' => $this->options['link_to_foundry'],
     );
 
-  } // options_form
+  }
 
   function render($values) {
 
@@ -62,17 +62,17 @@ class views_handler_field_fontyourface_foundry extends views_handler_field {
         $this->options['alter']['make_link'] = TRUE;
         $this->options['alter']['path'] = $foundry_url;
 
-      } // if
+      }
       else {
 
         $this->options['alter']['make_link'] = FALSE;
 
-      } // else
+      }
 
-    } // if
+    }
 
     return check_plain($values->{$this->field_alias});
 
-  } // render
+  }
 
-} // views_handler_field_fontyourface_foundry
+}

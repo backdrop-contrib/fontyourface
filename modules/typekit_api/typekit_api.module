@@ -13,9 +13,7 @@ function typekit_api_fontyourface_info() {
     'base_path' => 'https://typekit.com/fonts/',
   );
 
-  return $info;
-
-} // typekit_api_fontyourface_info
+}
 
 /**
  * Implements hook_fontyourface_import().
@@ -65,20 +63,20 @@ function typekit_api_fontyourface_import() {
 
           fontyourface_save_font($font);
 
-        } // foreach
+        }
 
-      } // foreach
+      }
 
-    } // if
+    }
     else {
       $success = FALSE;
       fontyourface_log('Typekit kit did not match current domain, @domain', array('@domain' => $_SERVER['HTTP_HOST']));
     }
-  } // foreach
+  }
 
   return $success;
 
-} // typekit_api_fontyourface_import
+}
 
 /**
  * Implements template_preprocess_page().
@@ -96,9 +94,9 @@ function typekit_api_preprocess_page(&$vars) {
         $metadata = unserialize($used_font->metadata);
         $kits[$metadata['kit']] = TRUE;
 
-      } // if
+      }
 
-    } // foreach
+    }
 
     if (count($kits) > 0) {
 
@@ -106,21 +104,21 @@ function typekit_api_preprocess_page(&$vars) {
 
       if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
         $base = 'https://use.typekit.com/';
-      } // if
+      }
 
       foreach (array_keys($kits) as $kit) {
 
         backdrop_add_js($base . $kit . '.js', array('type' => 'external'));
 
-      } // foreach
+      }
 
       backdrop_add_js('try{Typekit.load();}catch(e){}', array('type' => 'inline'));
 
-    } // if
+    }
 
-  } // if
+  }
 
-} // typekit_api_preprocess_page
+}
 
 /**
  * Implements hook_form_alter().
@@ -153,9 +151,9 @@ function typekit_api_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#submit'][] = 'typekit_api_token_submit';
 
-  } // if
+  }
 
-} // typekit_api_form_alter
+}
 
 /**
  * Updates API token.
@@ -167,9 +165,9 @@ function typekit_api_token_submit($form, &$form_state) {
     config_set('fontyourface.settings', 'typekit_api_token', $form_state['values']['typekit_api_token']);
     backdrop_set_message(t('Typeit API token updated.'));
 
-  } // if
+  }
 
-} // typekit_api_token_submit
+}
 
 /**
  * Implements hook_fontyourface_preview().
@@ -180,7 +178,7 @@ function typekit_api_fontyourface_preview($font, $text = NULL, $size = 18) {
 
   if ($text == NULL) {
     $text = $font->name;
-  } // if
+  }
 
   if ($size == 'all') {
 
@@ -192,20 +190,20 @@ function typekit_api_fontyourface_preview($font, $text = NULL, $size = 18) {
 
       $output .= '<div style="' . fontyourface_font_css($font) . ' font-size: ' . $size . 'px; line-height: ' . $size . 'px;">' . $text . '</div>';
 
-    } // foreach
+    }
 
-  } // if
+  }
   else {
 
     // Display single size.
 
     $output = '<span style="' . fontyourface_font_css($font) . ' font-size: ' . $size . 'px; line-height: ' . $size . 'px;">' . $text . '</span>';
 
-  } // else
+  }
 
   return $output;
 
-} // typekit_api_fontyourface_preview
+}
 
 /**
  * Provides header with token.
@@ -214,7 +212,7 @@ function typekit_api_token_headers() {
 
   return array('X-Typekit-Token' => config_get('fontyourface.settings', 'typekit_api_token'));
 
-} // typekit_api_token_headers
+}
 
 /**
  * Gets list of kits from API.
@@ -230,17 +228,17 @@ function typekit_api_get_kits() {
     $data = json_decode($response->data);
     $kits = $data->kits;
 
-  } // if
+  }
   else {
 
     backdrop_set_message(t('There was an error importing kit list from Typekit.'), 'error');
     fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
-  } // else
+  }
 
   return $kits;
 
-} // typekit_api_get_kits
+}
 
 /**
  * Get a specific kit from API based on ID.
@@ -254,17 +252,17 @@ function typekit_api_get_kit($kit_id) {
     $data = json_decode($response->data);
     $kit = $data->kit;
 
-  } // if
+  }
   else {
 
     backdrop_set_message(t('There was an error importing a kit (@kit) from Typekit.', array('@kit' => $kit_id)), 'error');
     fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
-  } // else
+  }
 
   return $kit;
 
-} // typekit_api_get_kit
+}
 
 /**
  * Checks if a given kit matches a given domain.
@@ -279,22 +277,22 @@ function typekit_api_kit_matches_domain($kit, $domain) {
 
     if ($kit_domain == $domain) {
       return TRUE;
-    } // if
+    }
     else {
 
       $regex = '#' . str_replace(array('.', '*'), array('\.', '.*'), $kit_domain) . '#';
 
       if (preg_match($regex, $domain)) {
         return TRUE;
-      } // if
+      }
 
-    } // else
+    }
 
-  } // foreach
+  }
 
   return FALSE;
 
-} // typekit_api_kit_matches_domain
+}
 
 /**
  * Get a specific variant from API based on family and variant IDs.
@@ -308,14 +306,14 @@ function typekit_api_get_variant($family_id, $variant_id) {
     $data = json_decode($response->data);
     $variant = $data->variation;
 
-  } // if
+  }
   else {
 
     backdrop_set_message(t('There was an error importing a variant (@kit, @variant) from Typekit.', array('@kit' => $kit_id, '@variant' => $variant_id)), 'error');
     fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
 
-  } // else
+  }
 
   return $variant;
 
-} // typekit_api_get_variant
+}

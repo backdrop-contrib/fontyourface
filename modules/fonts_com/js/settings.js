@@ -25,16 +25,16 @@
 
       });
 
-    } // attach
+    }
 
-  } // Backdrop.behaviors.fontsComSettings
+  }
 
   function fontsComSettingsCollapse(id) {
 
     if (!$(id).is('.collapsed')) {
       Backdrop.toggleFieldset(id);
-    } // if
+    }
 
-  } // fontsComSettingsCollapse
+  }
 
 })(jQuery);

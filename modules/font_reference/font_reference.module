@@ -20,7 +20,7 @@ function font_reference_field_info() {
     ),
   );
 
-} // font_reference_field_info
+}
 
 /**
  * Implements hook_field_schema();
@@ -44,7 +44,7 @@ function font_reference_field_schema($field) {
     ),
   );
 
-} // font_reference_field_schema
+}
 
 /**
  * Implements hook_field_settings_form().
@@ -61,7 +61,7 @@ function font_reference_field_settings_form($field, $instance, $has_data) {
   );
   return $form;
 
-} // font_reference_field_settings_form
+}
 
 /**
  * Implements hook_field_validate().
@@ -76,18 +76,18 @@ function font_reference_field_validate($entity_type, $entity, $field, $instance,
 
       if (is_numeric($item['fid'])) {
         $ids[] = $item['fid'];
-      } // if
+      }
       else {
         $errors[$field['field_name']][$langcode][$delta][] = array(
           'error' => 'invalid_fid',
           'message' => t('%name: invalid input.',
             array('%name' => $instance['label'])),
         );
-      } // else
+      }
 
-    } // if
+    }
 
-  } // foreach
+  }
 
   if ($ids) {
 
@@ -108,15 +108,15 @@ function font_reference_field_validate($entity_type, $entity, $field, $instance,
               array('%name' => $instance['label'])),
           );
 
-        } // if
+        }
 
-      } // if
+      }
 
-    } // foreach
+    }
 
-  } // if
+  }
 
-} // font_reference_field_validate
+}
 
 /**
  * Implements hook_field_is_empty().
@@ -125,7 +125,7 @@ function font_reference_field_is_empty($item, $field) {
 
   return empty($item['fid']);
 
-} // font_reference_field_is_empty
+}
 
 /**
  * Implements hook_field_formatter_info().
@@ -145,7 +145,7 @@ function font_reference_field_formatter_info() {
     ),
   );
 
-} // font_reference_field_formatter_info
+}
 
 /**
  * Implements hook_field_formatter_view().
@@ -169,9 +169,9 @@ function font_reference_field_formatter_view($entity_type, $entity, $field, $ins
           backdrop_add_css($css, array('type' => 'inline'));
           fontyourface_font_registry($font);
 
-        } // if
+        }
 
-      } // foreach
+      }
 
       break;
 
@@ -192,17 +192,17 @@ function font_reference_field_formatter_view($entity_type, $entity, $field, $ins
           backdrop_add_css($css, array('type' => 'inline'));
           fontyourface_font_registry($font);
 
-        } // if
+        }
 
-      } // foreach
+      }
 
       break;
 
-  } // switch
+  }
 
   return $result;
 
-} // font_reference_field_formatter_view
+}
 
 /**
  * Implements hook_field_widget_info_alter().
@@ -211,7 +211,7 @@ function font_reference_field_widget_info_alter(&$info) {
 
   $info['options_select']['field types'][] = 'font_reference';
 
-} // font_reference_field_widget_info_alter
+}
 
 /**
  * Implements hook_options_list().
@@ -222,7 +222,7 @@ function font_reference_options_list($field) {
 
   return $function($field);
 
-} // font_reference_options_list
+}
 
 /**
  * Returns list of enabled fonts.
@@ -235,8 +235,8 @@ function font_reference_allowed_values($field) {
 
   foreach ($fonts as $font) {
     $options[$font->fid] = check_plain($font->name);
-  } // foreach
+  }
 
   return $options;
 
-} // font_reference_allowed_values
+}

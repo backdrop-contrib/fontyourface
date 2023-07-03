@@ -23,7 +23,7 @@ function fontyourface_permission() {
     ),
   );
 
-} // fontyourface_perm
+}
 
 /**
  * Implements hook_init().
@@ -32,7 +32,7 @@ function fontyourface_init() {
 
   fontyourface_add_theme_info_fonts();
 
-} // fontyourface_init
+}
 
 /**
  * Load a font from the database using its URL
@@ -41,11 +41,11 @@ function fontyourface_load_font_by_url($url) {
 
   if ($font = db_query('SELECT * FROM {fontyourface_font} WHERE url LIKE :url', array(':url' => $url))->fetchObject()) {
     return $font;
-  } // if
+  }
 
   return array();
 
-} // fontyourface_load_font_by_url
+}
 
 /**
  * Load and display fonts that have been added through THEMENAME.info.
@@ -75,47 +75,50 @@ function fontyourface_add_theme_info_fonts() {
               $font->css_selector = '<none>';
               fontyourface_font_registry($font);
 
-            } // if
+            }
             else {
 
               if (fontyourface_count_fonts($font_provider) > 0) {
 
                 backdrop_set_message(t('The font declaration %declaration that is added to the theme .info file cannot be loaded. Make sure the font exists in the %provider font list.', array('%declaration' => $declaration, '%provider' => $font_provider)), 'error');
 
-              } //if
+              }
               elseif (module_exists('fontyourface_ui')) {
 
                 backdrop_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. !import to add fonts.', array('%provider' => check_plain($font_provider), '!import' => l(t('Run import'), 'admin/config/user-interface/fontyourface'))), 'error');
 
-              } // elseif
+              }
               else {
 
                 backdrop_set_message(t('The %provider font that is added to the theme .info file cannot be loaded. This is probably because the import has not been run yet. Enable !module module and run import to add fonts.', array('%provider' => check_plain($font_provider), '!module' => l('@font-your-face UI', 'admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
 
-              } // else
+              }
 
-            } // else
+            }
 
-          } // if
+          }
 
-        } // foreach
+        }
 
-      } // if
+      }
       else {
         backdrop_set_message(t('The font provider @provider is not enabled yet. Please <a href="!module_path">enable</a> it first.', array('@provider' => $font_provider, '!module_path' => url('admin/modules', array('fragment' => 'edit-modules-font-your-face')))), 'error');
-      } // else
+      }
 
-    } // foreach
+    }
 
-  } // if
+  }
 
-} // fontyourface_add_theme_info_fonts
+}
 
 /**
  * Returns info about the font provider for a given font.
  *
- * $font = Object: the full $font object.
- * $info_part = String: if this is given, we only return a string instead of an array.
+ * @param object $font
+ *   The full font object.
+ * @param string $info_part
+ *   If this is given, we only return a string instead of an array.
+ * @return string
  */
 function fontyourface_provider_info($font, $info_part = NULL) {
 
@@ -128,13 +131,13 @@ function fontyourface_provider_info($font, $info_part = NULL) {
 
     if (function_exists($info_function)) {
       $provider_info = $info_function();
-    } // if
+    }
 
-  } // if
+  }
 
   return empty($info_part) ? $provider_info : $provider_info[$info_part];
 
-} // fontyourface_provider_info
+}
 
 /**
  * Returns the number of fonts that exist in the database.
@@ -152,16 +155,16 @@ function fontyourface_count_fonts($provider = NULL, $status = NULL) {
 
   if (!empty($provider)) {
     $query->condition('provider', $provider);
-  } // if
+  }
   if (!empty($status)) {
     $query->condition('enabled', (int) $status);
-  } // if
+  }
 
   $count = $query->execute()->rowCount();
 
   return $count;
 
-} //fontyourface_count_fonts
+}
 
 /**
  * Implements template_preprocess_page().
@@ -186,15 +189,15 @@ function fontyourface_preprocess_page(&$vars) {
     fontyourface_rewrite_css($css);
     state_set('fontyourface_css_md5', $css_md5);
 
-  } // if
+  }
 
   if ($css != '') {
     fontyourface_add_css_in_preprocess($vars, 'fontyourface/font.css');
-  } // if
+  }
 
   $vars['fontyourface'] = $fonts;
 
-} // fontyourface_preprocess_page
+}
 
 /**
  * Generates CSS.
@@ -205,7 +208,7 @@ function fontyourface_generate_css($fonts = FALSE) {
 
   if (!$fonts) {
     $fonts = fontyourface_font_registry() + fontyourface_get_fonts();
-  } // if
+  }
 
   // Generate CSS.
 
@@ -217,13 +220,13 @@ function fontyourface_generate_css($fonts = FALSE) {
 
     if ($font_css != '' && $font->css_selector != '' && $font->css_selector != '<none>') {
       $css .= $font->css_selector . ' { ' . $font_css . ' }' . "\n";
-    } // if
+    }
 
-  } // foreach
+  }
 
   return $css;
 
-} // fontyourface_generate_css
+}
 
 /**
  * Re-writes fonts.css file.
@@ -237,9 +240,9 @@ function fontyourface_rewrite_css($css) {
 
   if (file_prepare_directory($destination_directory, FILE_CREATE_DIRECTORY)) {
     file_unmanaged_save_data($css, $destination, FILE_EXISTS_REPLACE);
-  } // if
+  }
 
-} // fontyourface_rewrite_css
+}
 
 /**
  * Adds a stylesheet in preprocess
@@ -250,20 +253,20 @@ function fontyourface_add_css_in_preprocess(&$vars, $css_path, $type = 'public')
 
     backdrop_add_css($css_path, array('type' => 'external', 'group' => CSS_THEME));
 
-  } // if
+  }
   else {
 
     if ($type == 'public') {
 
       $css_path = file_stream_wrapper_get_instance_by_scheme('public')->getDirectoryPath() . '/' . $css_path;
 
-    } // if
+    }
 
     backdrop_add_css($css_path, array('group' => CSS_THEME, 'basename' => 'fontyourface-' . md5($css_path)));
 
-  } // else
+  }
 
-} // fontyourface_add_css_in_preproce
+}
 
 /**
  * Gets fonts, defaults to all enabled.
@@ -277,11 +280,11 @@ function fontyourface_get_fonts($where = "enabled = 1 AND css_selector != ''", $
   while ($result = $results->fetchObject()) {
     fontyourface_add_font_tags($result);
     $fonts[$result->fid] = $result;
-  } // while
+  }
 
   return $fonts;
 
-} // fontyourface_get_fonts
+}
 
 /**
  * Gets a single font.
@@ -292,18 +295,18 @@ function fontyourface_get_font($fid, $clear = FALSE) {
 
   if ($clear) {
     $fonts = array();
-  } // if
+  }
 
   if (!isset($fonts[$fid])) {
 
     $fonts[$fid] = db_query('SELECT * FROM {fontyourface_font} WHERE fid = :fid', array(':fid' => $fid))->fetchObject();
     fontyourface_add_font_tags($fonts[$fid]);
 
-  } // if
+  }
 
   return $fonts[$fid];
 
-} // fontyourface_get_font
+}
 
 /**
  * Adds tags to a font object.
@@ -320,9 +323,9 @@ function fontyourface_add_font_tags(&$font) {
 
   foreach ($result as $tag) {
     $font->tags[$tag->tid] = $tag->name;
-  } // while
+  }
 
-} // fontyourface_add_tags_to_font
+}
 
 /**
  * Runs the font import of the given provider. Triggered
@@ -340,9 +343,9 @@ function fontyourface_import_fonts($provider) {
       backdrop_set_message(t('@provider import complete.', array('@provider' => $provider_info['name'])));
     }
 
-  } // if
+  }
 
-} // fontyourface_import_fonts
+}
 
 /**
  * Enables a single font.
@@ -359,11 +362,11 @@ function fontyourface_enable_font(&$font) {
 
   if (function_exists($enable_function)) {
     return $enable_function($font);
-  } // if
+  }
 
   return TRUE;
 
-} // fontyourface_enable_font
+}
 
 /**
  * Disables a single font.
@@ -380,11 +383,11 @@ function fontyourface_disable_font(&$font) {
 
   if (function_exists($disable_function)) {
     return $disable_function($font);
-  } // if
+  }
 
   return TRUE;
 
-} // fontyourface_disable_font
+}
 
 /**
  * Sets a font's CSS selector.
@@ -401,9 +404,9 @@ function fontyourface_set_css_selector(&$font, $css_selector) {
 
   if (function_exists($selector_function)) {
     return $selector_function($font);
-  } // if
+  }
 
-} // fontyourface_set_css_selector
+}
 
 /**
  * Sets a font's CSS fallbacks.
@@ -416,7 +419,7 @@ function fontyourface_set_css_fallbacks(&$font, $css_fallbacks) {
     ->execute();
   $font->css_fallbacks = $css_fallbacks;
 
-} // fontyourface_set_css_fallbacks
+}
 
 /**
  * Adds or updates font, depending on whether it already exists.
@@ -447,12 +450,12 @@ function fontyourface_save_font(&$font, $revert = FALSE) {
     backdrop_write_record('fontyourface_font', $font, 'fid');
     $tags = $font->tags;
 
-  } // if
+  }
   else {
 
     backdrop_write_record('fontyourface_font', $font);
 
-  } // else
+  }
 
   db_delete('fontyourface_tag_font')
     ->condition('fid', $font->fid)
@@ -460,13 +463,13 @@ function fontyourface_save_font(&$font, $revert = FALSE) {
 
   if (!is_array($tags)) {
     $tags = array();
-  } // if
+  }
 
   fontyourface_add_tags_to_font($tags, $font->fid);
 
   $font->tags = $tags;
 
-} // fontyourface_save_font
+}
 
 /**
  * Adds tags to font.
@@ -490,9 +493,9 @@ function fontyourface_add_tags_to_font($tags, $fid) {
       ->key(array('tid' => $tag_object->tid, 'fid' => $fid))
       ->execute();
 
-  } // foreach
+  }
 
-} // fontyourface_add_tags_to_font
+}
 
 /**
  * Adds tag if it doesn't already exist.
@@ -507,13 +510,13 @@ function fontyourface_save_tag(&$tag) {
       $tag->name = backdrop_strtolower($tag->name);
     }
     $tag->tid = $exists->tid;
-  } // if
+  }
   else {
     $tag->name = backdrop_strtolower($tag->name);
     backdrop_write_record('fontyourface_tag', $tag);
-  } // else
+  }
 
-} // fontyourface_save_tag
+}
 
 /**
  * Gets preview from provider, if available.
@@ -526,11 +529,11 @@ function fontyourface_preview($font, $text, $size) {
 
   if (function_exists($function)) {
     return $function($font, $text, $size);
-  } // if
+  }
 
   return $text;
 
-} // fontyourface_preview
+}
 
 /**
  * Gets preview text from provider, if available.
@@ -541,15 +544,20 @@ function fontyourface_short_preview_text($font) {
 
   if (function_exists($function)) {
     return $function($font);
-  } // if
+  }
 
   return config_get('fontyourface.settings', 'fontyourface_short_preview_text');
 
-} // fontyourface_short_preview_text
+}
 
 /**
  * Manages registry of fonts used on current page, to provide
  * list to fontyourface_preprocess_page().
+ *
+ * @param object|false $font
+ * @param bool $clear
+ * @return array
+ *   Array of font objects.
  */
 function fontyourface_font_registry($font = FALSE, $clear = FALSE) {
 
@@ -557,15 +565,15 @@ function fontyourface_font_registry($font = FALSE, $clear = FALSE) {
 
   if ($clear) {
     $fonts = array();
-  } // if
+  }
 
   if ($font) {
     $fonts[$font->fid] = $font;
-  } // if
+  }
 
   return $fonts;
 
-} // fontyourface_font_registry
+}
 
 /**
  * Creates CSS with any properties set on font.
@@ -579,30 +587,30 @@ function fontyourface_font_css($font) {
     // Enclose font family definition in single quotes if not already enclosed.
     if ($font->css_family[0] === "'") {
       $family_list = $font->css_family;
-    } // if
+    }
     else {
       $family_list = "'" . $font->css_family . "'";
-    } // else
+    }
 
     if ($font->css_fallbacks) {
       $family_list .= ', ' . $font->css_fallbacks;
-    } // if
+    }
 
     $css[] = 'font-family: ' . $family_list . ';';
 
-  } // if
+  }
 
   if ($font->css_style) {
     $css[] = 'font-style: ' . $font->css_style . ';';
-  } // if
+  }
 
   if ($font->css_weight) {
     $css[] = 'font-weight: ' . $font->css_weight . ';';
-  } // if
+  }
 
   return implode(' ', $css);
 
-} // fontyourface_font_c
+}
 
 /**
  * Removes all fonts and related tags from given provider.
@@ -617,7 +625,7 @@ function fontyourface_provider_disable($provider) {
 
   fontyourface_delete_unused_tags();
 
-} // fontyourface_provider_disable
+}
 
 /**
  * Deletes all unused tags.
@@ -637,7 +645,7 @@ function fontyourface_delete_unused_tags() {
 
   foreach ($missing_fonts as $missing_font) {
     $missing_fids[] = $missing_font->fid;
-  } // foreach
+  }
 
   if (count($missing_fids) > 0) {
 
@@ -645,7 +653,7 @@ function fontyourface_delete_unused_tags() {
       ->condition('fid', $missing_fids, 'IN')
       ->execute();
 
-  } // if
+  }
 
   // Delete all unused tags.
 
@@ -660,7 +668,7 @@ function fontyourface_delete_unused_tags() {
 
   foreach ($missing_tags as $missing_tag) {
     $missing_tids[] = $missing_tag->tid;
-  } // foreach
+  }
 
   if (count($missing_tids) > 0) {
 
@@ -668,9 +676,9 @@ function fontyourface_delete_unused_tags() {
       ->condition('tid', $missing_tids, 'IN')
       ->execute();
 
-  } // if
+  }
 
-} // fontyourface_delete_unused_tags
+}
 
 /**
  * Logs to watchdog if logging is enabled.
@@ -685,9 +693,9 @@ function fontyourface_log($message, $arguments) {
 
   if (config_get('fontyourface', 'fontyourface_detailed_logging') == TRUE) {
     watchdog('@font-your-face', $message, $arguments, WATCHDOG_INFO);
-  } // if
+  }
 
-} // fontyourface_log
+}
 
 /**
  * Parse the info file of the currently used theme
@@ -701,11 +709,11 @@ function fontyourface_parse_theme_info_file() {
 
   if (isset($info['fonts'])) {
     $font_declarations = $info['fonts'];
-  } // if
+  }
 
   return $font_declarations;
 
-} // fontyourface_parse_theme_info_file
+}
 
 /**
  * Implements hook_ajax_render_alter().
@@ -729,21 +737,21 @@ function fontyourface_ajax_render_alter(&$commands) {
 
     if (function_exists($function)) {
       $function($vars);
-    } // if
+    }
 
-  } // foreach
+  }
 
   // Add AJAX command to prepend the CSS to <head>.
 
   if (isset($vars['styles'])) {
     $commands[] = ajax_command_prepend('head', $vars['styles']);
-  } // if
+  }
 
-} // fontyourface_ajax_render_alter
+}
 
 /**
  * Implements hook_modernizr_info().
  */
 function fontyourface_modernizr_info() {
   return array('fontface');
-} // fontyourface_modernizr_info
+}

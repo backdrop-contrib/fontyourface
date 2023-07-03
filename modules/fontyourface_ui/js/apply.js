@@ -20,19 +20,19 @@
           select.find('option[value="' + selector + '"]').attr('selected', true);
           input.hide();
 
-        } // if
+        }
         else {
 
           select.find('option[value="-- other --"]').attr('selected', true);
           input.show();
 
-        } // else
+        }
 
       });
 
-    } // attach
+    }
 
-  } // Backdrop.behaviors.fontyourfaceAddForm
+  }
 
   function fontyourfaceCssSelectChange() {
 
@@ -47,11 +47,11 @@
 
       if (input.val() == '<none>') {
         input.val('');
-      } // if
+      }
 
       input.show();
 
-    } // if
+    }
     else {
 
       input.val(selector);
@@ -69,10 +69,10 @@
         }
         select.parent().append('<div class="font-family">' + themeInstructions + '</div>');
 
-      } // if
+      }
 
-    } // else
+    }
 
-  } // fontyourfaceCssSelectChange
+  }
 
 })(jQuery);

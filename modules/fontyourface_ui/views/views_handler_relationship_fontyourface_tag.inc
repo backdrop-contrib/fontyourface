@@ -26,9 +26,9 @@ class views_handler_relationship_fontyourface_tag extends views_handler_relation
 
       if (!empty($this->options['required'])) {
         $def['type'] = 'INNER';
-      } // if
+      }
 
-    } // if
+    }
     else {
 
       // If the join is optional, join a subselect that will emulate fontyourface_tag_font table instead.
@@ -42,7 +42,7 @@ class views_handler_relationship_fontyourface_tag extends views_handler_relation
           ON t.tid = tf.tid
       )";
 
-    } // else
+    }
 
     $join = new views_join();
 
@@ -54,6 +54,6 @@ class views_handler_relationship_fontyourface_tag extends views_handler_relation
     $alias = $def['table'] . '_' . $this->table;
     $this->alias = $this->query->add_relationship($alias, $join, 'fontyourface_tag', $this->relationship);
 
-  } // query
+  }
 
-} // views_handler_relationship_fontyourface_tag_font
+}

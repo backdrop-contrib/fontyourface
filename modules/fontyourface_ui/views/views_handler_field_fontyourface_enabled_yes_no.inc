@@ -15,14 +15,14 @@ class views_handler_field_fontyourface_enabled_yes_no extends views_handler_fiel
     parent::construct();
     $this->additional_fields['enabled'] = 'enabled';
 
-  } // construct
+  }
 
   function query() {
 
     $this->ensure_my_table();
     $this->add_additional_fields();
 
-  } // query
+  }
 
   function render($values) {
 
@@ -34,13 +34,13 @@ class views_handler_field_fontyourface_enabled_yes_no extends views_handler_fiel
 
       return 'yes';
 
-    } // if
+    }
     else {
 
       return 'no';
 
-    } // else
+    }
 
-  } // render
+  }
 
-} // views_handler_field_fontyourface_enabled_yes_no
+}

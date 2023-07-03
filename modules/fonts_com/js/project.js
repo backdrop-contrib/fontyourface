@@ -8,10 +8,10 @@
 
       if ($('#edit-project').val() != '') {
         $('#edit-project').change();
-      } // if
+      }
 
-    } // attach
+    }
 
-  } // Backdrop.behaviors.fontsComProject
+  }
 
 })(jQuery);
