@@ -135,47 +135,63 @@ function google_fonts_api_fontyourface_import() {
 
   // Return the JSON object with all available fonts
 
-  // This key is limited to 10.000 requests per day, which should
-  // be sufficient as it is only used when selecting fonts in the
-  // admin interface. After that, the fonts are cached in Backdrop.
-
-  $success = TRUE;
   $fonts = array();
+  $json_font_list = _google_fonts_api_get_fonts_from_api();
+  if (!$json_font_list) {
+    return FALSE;
+  }
+  $fonts = _google_fonts_api_convert_api_results($json_font_list);
 
-  $result = backdrop_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=' . config_get('fontyourface.settings', 'google_fonts_api_key'));
-
-  fontyourface_log('backdrop_http_request response: @response', array('@response' => print_r($result, TRUE)));
-
-  if ($result->code != 200) {
-
-    $success = FALSE;
-    backdrop_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com). Error: %error', array('%error' => $result->error)), 'error');
-
-  } //if
-  elseif (isset($result->data)) {
-
-    $json_results = json_decode($result->data);
-
-    fontyourface_log('google_fonts_api_fontyourface_import JSON: @json', array('@json' => print_r($json_results, TRUE)));
-
-    $fonts = _google_fonts_api_convert_api_results($json_results->items);
-
-    fontyourface_log('google_fonts_api_fontyourface_import fonts: @fonts', array('@fonts' => print_r($fonts, TRUE)));
-
-  } //elseif
+  fontyourface_log('google_fonts_api_fontyourface_import fonts: @fonts', array('@fonts' => print_r($fonts, TRUE)));
 
   foreach ($fonts as $font) {
 
     if (!isset($font->tags)) {
       $font->tags = array();
-    } // if
+    }
     fontyourface_save_font($font);
 
-  } // foreach
+  }
 
-  return $success;
+  return TRUE;
+}
 
-} // google_fonts_api_fontyourface_import
+/**
+ * Retrieves fonts from api and parses them for consumption.
+ *
+ * @param string $key
+ *   An API key to use for testing.
+ *
+ * @return array|false
+ *   List of fonts or FALSE.
+ */
+function _google_fonts_api_get_fonts_from_api($key = '') {
+  // Return the JSON object with all available fonts.
+  $google_api_key = $key ?: config_get('fontyourface.settings', 'google_fonts_api_key');
+
+  // This key is limited to 10000 requests per day, which should
+  // be sufficient as it is only used when selecting fonts in the
+  // admin interface. After that, the fonts are cached in Backdrop.
+
+  try {
+    $uri = 'https://www.googleapis.com/webfonts/v1/webfonts?key=' . $google_api_key;
+    $response = backdrop_http_request($uri);
+    fontyourface_log('backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    if ($response->code == 200) {
+      $json_results = json_decode($response->data);
+      return $json_results->items;
+    }
+    else {
+      // Connection was successful but Google responded with an error code.
+      throw new \Exception();
+    }
+  }
+  catch (Exception $e) {
+    backdrop_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com). Error: %error', array('%error' => $response->error)), 'error');
+
+    return FALSE;
+  }
+}
 
 /**
  * Implements hook_views_api().
@@ -196,8 +212,10 @@ function google_fonts_api_views_api() {
 /**
  * Converts the Google Fonts API JSON results to a generic Fonts object array
  *
- * @param $json_font_list: Array of Font objects
+ * @param array $json_font_list
+ *   Array of Font objects.
  *
+ * @return array
  */
 function _google_fonts_api_convert_api_results($json_font_list) {
   $fonts = array();
@@ -274,10 +292,9 @@ function _google_fonts_api_convert_api_results($json_font_list) {
  * Implements hook_form_FORM_ID_alter().
  */
 function google_fonts_api_form_fontyourface_ui_settings_form_alter(&$form, &$form_state) {
-  $config = config('google_fonts_api.settings');
   $form['google_fonts_api'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Google Fonts Settings'),
+    '#title' => t('Google Fonts'),
     '#weight' => -1,
     'google_fonts_api_key' => array(
       '#type' => 'textfield',
@@ -290,42 +307,45 @@ function google_fonts_api_form_fontyourface_ui_settings_form_alter(&$form, &$for
       '#value' => t('Save Google API key'),
     ),
   );
-  $form['imports']['import_google_fonts_api']['#disabled'] = !(bool) config_get('fontyourface.settings', 'google_fonts_api_key');
-//  $form['#validate'][] = 'google_fonts_api_form_fontyourface_ui_settings_form_validate';
+  // Move the default update/import button to the Google Fonts fieldset
+    if (isset($form['providers']['google_fonts_api_import'])) {
+      $form['google_fonts_api']['google_fonts_api_import'] = $form['providers']['google_fonts_api_import'];
+      unset($form['providers']['google_fonts_api_import']);
+    }
+  $form['google_fonts_api']['google_fonts_api_import']['#disabled'] = !(bool) config_get('fontyourface.settings', 'google_fonts_api_key');
+
+  $form['#validate'][] = 'google_fonts_api_form_fontyourface_ui_settings_form_validate';
   $form['#submit'][] = 'google_fonts_api_form_fontyourface_ui_settings_form_submit';
 
-  // Move the default Import button to the Google Fonts fieldset.
-  if (isset($form['providers']['google_fonts_api_import'])) {
-    $form['google_fonts_api']['google_fonts_api_import'] = $form['providers']['google_fonts_api_import'];
-    unset($form['providers']['google_fonts_api_import']);
-
-    if (count($form['providers']) == 0) {
-      // If providers is empty then, remove its fieldset?
-    }
-  }
-} //google_fonts_api_form_fontyourface_ui_settings_form_alter
-
+}
 
 /**
  * Form validation handler for Google Font settings.
  */
 function google_fonts_api_form_fontyourface_ui_settings_form_validate(&$form, &$form_state) {
+  if ($form_state['clicked_button']['#parents'][0] != 'google_api_save') {
+    return;
+  }
   $google_fonts_api_key = trim($form_state['values']['google_fonts_api_key']);
   if ($google_fonts_api_key) {
-    $connection_works = google_fonts_api_fontyourface_import($google_fonts_api_key);
+    $connection_works = _google_fonts_api_get_fonts_from_api($google_fonts_api_key);
     if (!$connection_works) {
-      // The google_fonts_api_fontyourface_import() will output a more
-      // thorough error message.
-      form_set_error('google_fonts_api_key', t('The API Key entered does not work.'), array(array('google_fonts_api')));
+      form_set_error('google_fonts_api_key', t('The API Key is invalid.'));
     }
   }
-} // google_fonts_api_form_fontyourface_ui_settings_form_validate
+  else {
+    form_set_error('google_fonts_api_key', t('The API Key is required.'));
+  }
+}
 
 /**
  * Form submit handler for Google Font settings.
  */
 function google_fonts_api_form_fontyourface_ui_settings_form_submit(&$form, &$form_state) {
+  if ($form_state['clicked_button']['#parents'][0] != 'google_api_save') {
+    return;
+  }
   $values = $form_state['values'];
-  $config = config('google_fonts_api.settings');
   config_set('fontyourface.settings', 'google_fonts_api_key', $values['google_fonts_api_key']);
-} // google_fonts_api_form_fontyourface_ui_settings_form_submit
+  backdrop_set_message(t('API key successfully saved.'));
+}
