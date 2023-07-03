@@ -24,9 +24,6 @@ function google_fonts_api_enable() {
     ->condition('name', 'google_fonts_api')
     ->execute();
 
-  // Import/update fonts
-  fontyourface_import_fonts('google_fonts_api');
-
 } // google_fonts_api_enable
 
 /**
