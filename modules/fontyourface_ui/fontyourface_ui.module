@@ -119,7 +119,7 @@ function fontyourface_ui_menu() {
 
   return $items;
 
-} // fontyourface_ui_menu
+}
 
 /**
  * Implements hook_views_api().
@@ -131,7 +131,7 @@ function fontyourface_ui_views_api() {
     'path' => backdrop_get_path('module', 'fontyourface_ui') . '/views',
   );
 
-} // fontyourface_ui_views_api
+}
 
 /**
  * Implements hook_views_pre_render().
@@ -155,7 +155,7 @@ function fontyourface_ui_views_pre_render(&$view) {
 
       backdrop_set_message(t('No font providers enabled. !enable before browsing fonts.', array('!enable' => l(t('Enable font provider modules'), 'admin/modules'))), 'error');
 
-    } // if
+    }
 
     $selected_provider = arg(4);
 
@@ -163,7 +163,7 @@ function fontyourface_ui_views_pre_render(&$view) {
 
     if ($selected_provider == '') {
       fontyourface_ui_browse_page();
-    } // if
+    }
 
     $has_fonts = db_query_range("SELECT fid FROM {fontyourface_font} WHERE provider = :provider", 0, 1, array(':provider' => $selected_provider))->fetchObject();
 
@@ -171,10 +171,10 @@ function fontyourface_ui_views_pre_render(&$view) {
 
     if (function_exists($function)) {
       $info = $function();
-    } // if
+    }
     else {
       $info = FALSE;
-    } // else
+    }
 
     if ($info) {
 
@@ -185,19 +185,19 @@ function fontyourface_ui_views_pre_render(&$view) {
 
       backdrop_set_breadcrumb($breadcrumb);
 
-    } // if
+    }
 
     if (!$has_fonts) {
 
       if ($info) {
         backdrop_set_message(t('@provider currently has no fonts. This is probably because the import has not been run yet. !import to add fonts.', array('@provider' => $info['name'], '!import' => l(t('Run import'), 'admin/config/user-interface/fontyourface'))), 'error');
-      } // if
+      }
 
-    } // if
+    }
 
-  } // if
+  }
 
-} // fontyourface_ui_views_pre_render
+}
 
 /**
  * Implements hook_views_data().
@@ -502,7 +502,7 @@ function fontyourface_ui_views_data() {
 
   return $data;
 
-} // fontyourface_ui_views_data
+}
 
 /**
  * Implements hook_views_handlers().
@@ -549,7 +549,7 @@ function fontyourface_ui_views_handlers() {
     ),
   );
 
-} // fontyourface_ui_views_handler
+}
 
 /**
  * Creates settings form.
@@ -612,19 +612,19 @@ function fontyourface_ui_settings_form($form, &$form_state) {
 
       $count = $count_function();
 
-    } // if
+    }
     else {
 
       $count = db_query("SELECT COUNT(fid) AS total FROM {fontyourface_font} WHERE provider = :provider", array(':provider' => $module))->fetchField();
 
-    } // else
+    }
 
     $tokens = array('@provider' => $provider['name'], '@count' => (int) $count);
     $status = t('@provider is enabled with @count fonts.', $tokens);
 
     if (function_exists($status_function)) {
       $status .= ' ' . $status_function();
-    } // if
+    }
 
     $form['providers'][$module . '_import'] = array(
       '#prefix' => '<div>',
@@ -646,13 +646,13 @@ function fontyourface_ui_settings_form($form, &$form_state) {
         '#value' => $button_text,
       );
 
-    } // if
+    }
 
-  } // foreach
+  }
 
   return $form;
 
-} // fontyourface_ui_settings_form
+}
 
 /**
  * Handles provider imports.
@@ -680,11 +680,11 @@ function fontyourface_ui_settings_form_submit($form, &$form_state) {
       fontyourface_import_fonts($module);
       return;
 
-    } // if
+    }
 
-  } // foreach
+  }
 
-} // fontyourface_ui_settings_form_submit
+}
 
 /**
  * Admin page shows enabled fonts with options to add.
@@ -697,7 +697,7 @@ function fontyourface_ui_apply_page() {
     backdrop_set_message(t('No fonts enabled yet, please !enable first.', array(
       '!enable' => l(t('enable some fonts'), 'admin/appearance/fontyourface/browse'))
     ), 'error');
-  } // if
+  }
 
   backdrop_add_css(backdrop_get_path('module', 'fontyourface_ui') . '/css/fontyourface_ui.css');
   backdrop_add_library('system', 'ui.tabs');
@@ -731,7 +731,7 @@ function fontyourface_ui_apply_page() {
 
   return $output;
 
-} // fontyourface_ui_apply_page
+}
 
 /**
  * Redirects to the first enabled provider.
@@ -742,15 +742,15 @@ function fontyourface_ui_browse_page() {
 
   if (count($providers) > 0) {
     backdrop_goto('admin/appearance/fontyourface/browse/' . $providers[0]);
-  } // if
+  }
   else {
 
     backdrop_set_message(t('No font providers enabled. !enable before browsing fonts.', array('!enable' => l(t('Enable font providers'), 'admin/modules'))), 'error');
     return '';
 
-  } // else
+  }
 
-} // fontyourface_ui_browse_page
+}
 
 /**
  * Provides form to apply selectors to fonts.
@@ -812,7 +812,7 @@ function fontyourface_ui_apply_by_font_form($form, &$form_state) {
       '#markup' => '<td>' . $actionsedit . " - " . $actions . '</td>',
     );
 
-  } // foreach
+  }
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -821,7 +821,7 @@ function fontyourface_ui_apply_by_font_form($form, &$form_state) {
 
   return $form;
 
-} // fontyourface_ui_apply_by_font_form
+}
 
 /**
  * Updates CSS Selectors
@@ -837,18 +837,18 @@ function fontyourface_ui_apply_by_font_form_submit($form, &$form_state) {
     if ($font->css_selector != $css_selector) {
       fontyourface_set_css_selector($font, $css_selector);
       $updated[] = $font->name;
-    } // if
+    }
 
-  } // foreach
+  }
 
   if (count($updated)) {
     backdrop_set_message(t('Updated') . ' <i>' . implode('</i>, <i>', $updated) . '</i>.');
-  } // if
+  }
   else {
     backdrop_set_message(t('Submitted CSS selectors contained no changes.'), 'warning');
-  } // else
+  }
 
-} // fontyourface_ui_apply_by_font_form_submit
+}
 
 /**
  * Provides form to apply fonts to selectors.
@@ -863,7 +863,7 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
 
   foreach ($fonts as $font) {
     $font_select['#options'][$font->fid] = $font->name;
-  } // foreach
+  }
 
   $unused_selectors = $default_selectors = array(
     'h1, h2, h3, h4, h5, h6' => t('all headers') . ' (h1, h2, h3, h4, h5, h6)',
@@ -880,9 +880,9 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
 
     if (isset($unused_selectors[$selector->css_selector])) {
       unset($unused_selectors[$selector->css_selector]);
-    } // if
+    }
 
-  } // foreach
+  }
 
   $unused_selector_index = 1;
 
@@ -896,7 +896,7 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
     $selectors[] = $new_selector;
     $unused_selector_index++;
 
-  } // foreach
+  }
 
   $form['table'] = array(
     '#prefix' => '<table><tbody><thead><tr><th>' . t('CSS Selector') . '</th><th>' . t('Font') . '</th><th>' . t('Fallbacks') . '</th></tr></thead>',
@@ -913,7 +913,7 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
     $selector_display = $selector->css_selector;
     if (isset($default_selectors[$selector->css_selector])) {
       $selector_display = $default_selectors[$selector->css_selector];
-    } // if
+    }
 
     $form['table']['row_' . $selector->fid]['css_selector[' . $selector->fid . ']'] = array(
       '#prefix' => '<td>',
@@ -937,7 +937,7 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
       '#suffix' => '</td>',
     );
 
-  } // foreach
+  }
 
   $form['table']['row_new'] = array(
     '#prefix' => '<tr>',
@@ -971,7 +971,7 @@ function fontyourface_ui_apply_by_selector_form($form, &$form_state) {
 
   return $form;
 
-} // fontyourface_ui_apply_by_selector_form
+}
 
 /**
  * Updates Fonts.
@@ -994,17 +994,17 @@ function fontyourface_ui_apply_by_selector_form_submit($form, &$form_state) {
     if (!isset($selector_per_fid[$old_fid_int])) {
       $selector_per_fid[$old_fid_int] = array();
       $fallbacks_per_fid[$old_fid_int] = array();
-    } // if
+    }
 
     if (!isset($selector_per_fid[$new_fid_int])) {
       $selector_per_fid[$new_fid_int] = array();
       $fallbacks_per_fid[$new_fid_int] = array();
-    } // if
+    }
 
     $selector_per_fid[$new_fid_int][] = $css_selector;
     $fallbacks_per_fid[$new_fid_int][] = $css_fallbacks;
 
-  } // foreach
+  }
 
   unset($selector_per_fid[0]);
   unset($fallbacks_per_fid[0]);
@@ -1021,9 +1021,9 @@ function fontyourface_ui_apply_by_selector_form_submit($form, &$form_state) {
       fontyourface_set_css_selector($font, $full_selector);
       $updated[$full_selector] = $full_selector;
 
-    } // if
+    }
 
-  } // foreach
+  }
 
   foreach ($fallbacks_per_fid as $fid => $fallbacks) {
 
@@ -1034,18 +1034,18 @@ function fontyourface_ui_apply_by_selector_form_submit($form, &$form_state) {
 
     if ($font && $font->css_fallbacks != $full_fallback) {
       fontyourface_set_css_fallbacks($font, $full_fallback);
-    } // if
+    }
 
-  } // foreach
+  }
 
   if (count($updated)) {
     backdrop_set_message(t('Updated') . ' <i>' . implode('</i>, <i>', $updated) . '</i>.');
-  } // if
+  }
   else {
     backdrop_set_message(t('Submitted fonts contained no changes.'), 'warning');
-  } // else
+  }
 
-} // fontyourface_ui_apply_by_font_form_submit
+}
 
 /**
  * Provides instructions for placing fonts in theme.
@@ -1066,12 +1066,12 @@ function fontyourface_ui_theme_instructions() {
       $info_declarations[] = '; ' . t("Local font '@font' can not be included in a theme.info file,", array('@font' => $font->name));
       $info_declarations[] = '; ' . t('because it can not be loaded via URL.');
 
-    } // if
+    }
     else {
       $info_declarations[] = 'fonts[' . $font->provider . '][] = "' . $path . '"';
-    } // else
+    }
 
-  } // foreach
+  }
 
   $instructions = array(
     'text' => array(
@@ -1084,7 +1084,7 @@ function fontyourface_ui_theme_instructions() {
 
   return $instructions;
 
-} // fontyourface_ui_theme_instructions
+}
 
 /**
  * Provides title for edit form.
@@ -1095,7 +1095,7 @@ function fontyourface_ui_admin_edit_form_title($fid) {
 
   return t('Edit font') . ' ' . $font->name;
 
-} // fontyourface_ui_admin_edit_form_title
+}
 
 /**
  * Edit form changes a single font, including CSS selector and enabled status.
@@ -1112,7 +1112,7 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
 
   if (function_exists($info_function)) {
     $provider = $info_function();
-  } // if
+  }
 
   $form = array(
     'fid' => array(
@@ -1144,10 +1144,10 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
 
     if ($font->foundry_url != '') {
       $foundry_markup = l($font->foundry, $font->foundry_url);
-    } // if
+    }
     else {
       $foundry_markup = check_plain($font->foundry);
-    } // else
+    }
 
     $form['details'] += array(
       'foundry' => array(
@@ -1155,16 +1155,16 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
       ),
     );
 
-  } // if
+  }
 
   if ($font->license != '') {
 
     if ($font->license_url != '') {
       $license_markup = l($font->license, $font->license_url, array('attributes' => array('rel' => 'license')));
-    } // if
+    }
     else {
       $license_markup = check_plain($font->license);
-    } // else
+    }
 
     $form['details'] += array(
       'license' => array(
@@ -1172,14 +1172,14 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
       ),
     );
 
-  } // if
+  }
 
   $view = '';
   $view_function = $font->provider . '_fontyourface_preview';
 
   if (function_exists($view_function)) {
     $view = $view_function($font, $config->get('fontyourface_sample_text'), 'all');
-  } // if
+  }
 
   $form += array(
     'preview' => array(
@@ -1221,7 +1221,7 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
       ),
     );
 
-  } // if
+  }
 
   $form += array(
     'enabled' => array(
@@ -1243,7 +1243,7 @@ function fontyourface_ui_admin_edit_form($form, &$form_state, $fid) {
 
   return $form;
 
-} // fontyourface_ui_admin_edit_form
+}
 
 /**
  * Edit form submit handler.
@@ -1256,19 +1256,19 @@ function fontyourface_ui_admin_edit_form_submit($form, &$form_state) {
 
     backdrop_goto('admin/appearance/fontyourface');
 
-  } // if
+  }
   else {
 
     if ($form['enabled']['#value'] > $font->enabled) {
       fontyourface_enable_font($font);
-    } // if
+    }
     elseif ($form['enabled']['#value'] < $font->enabled) {
       fontyourface_disable_font($font);
-    } // elseif
+    }
 
     if ($font->css_selector != $form['css']['#value']) {
       fontyourface_set_css_selector($font, $form['css']['#value']);
-    } // if
+    }
 
     $tags = backdrop_explode_tags($form_state['values']['tags']);
 
@@ -1282,13 +1282,13 @@ function fontyourface_ui_admin_edit_form_submit($form, &$form_state) {
       $font->tags = $tags;
       fontyourface_delete_unused_tags();
 
-    } // if
+    }
 
     backdrop_set_message(t('Updated') . ' <i>' . $font->name . '</i>.');
 
-  } // else
+  }
 
-} // fontyourface_ui_admin_edit_form_submit
+}
 
 /**
  * Returns JSON-encoded autocomplete matches.
@@ -1309,7 +1309,7 @@ function fontyourface_ui_autocomplete($tags_typed = '') {
 
       $query->condition('t.name', $tags_typed, 'NOT IN');
 
-    } // if
+    }
 
     // Select rows that match by tag name.
     $tags_return = $query
@@ -1330,18 +1330,18 @@ function fontyourface_ui_autocomplete($tags_typed = '') {
       // Tag names containing commas or quotes must be wrapped in quotes.
       if (strpos($name, ',') !== FALSE || strpos($name, '"') !== FALSE) {
         $n = '"' . str_replace('"', '""', $name) . '"';
-      } // if
+      }
       else {
         $matches[$prefix . $n] = check_plain($name);
-      } // else
+      }
 
-    } // foreach
+    }
 
-  } // if
+  }
 
   backdrop_json_output($matches);
 
-} // fontyourface_ui_autocomplete
+}
 
 /**
  * Provides title for enable form.
@@ -1352,7 +1352,7 @@ function fontyourface_ui_admin_enable_title($fid) {
 
   return t('Enable font') . ' ' . $font->name;
 
-} // fontyourface_ui_admin_enable_title
+}
 
 /**
  * Enables a single font.
@@ -1383,7 +1383,7 @@ function fontyourface_ui_admin_enable_form($form, &$form_state, $fid) {
 
   return $form;
 
-} // fontyourface_ui_admin_enable_form
+}
 
 /**
  * Enable form submit handler.
@@ -1396,12 +1396,12 @@ function fontyourface_ui_admin_enable_form_submit($form, &$form_state) {
     fontyourface_enable_font($font);
     backdrop_set_message(t('Enabled @font.', array('@font' => $font->name)), 'info');
 
-  } // if
+  }
   else {
     backdrop_set_message(t('Canceled.'));
-  } // else
+  }
 
-} // fontyourface_ui_admin_enable_form_submit
+}
 
 /**
  * Provides title for disable form.
@@ -1412,7 +1412,7 @@ function fontyourface_ui_admin_disable_title($fid) {
 
   return t('Disable font') . ' ' . $font->name;
 
-} // fontyourface_ui_admin_disable_title
+}
 
 /**
  * Disables a single font.
@@ -1443,7 +1443,7 @@ function fontyourface_ui_admin_disable_form($form, &$form_state, $fid) {
 
   return $form;
 
-} // fontyourface_ui_admin_disable_form
+}
 
 /**
  * Disable form submit handler.
@@ -1456,12 +1456,12 @@ function fontyourface_ui_admin_disable_form_submit($form, &$form_state) {
     fontyourface_disable_font($font);
     backdrop_set_message(t('Disabled @font.', array('@font' => $font->name)));
 
-  } // if
+  }
   else {
     backdrop_set_message(t('Canceled.'));
-  } // else
+  }
 
-} // fontyourface_ui_admin_disable_form_submit
+}
 
 /**
  * Enables font based on POSTed fid.
@@ -1484,17 +1484,17 @@ function fontyourface_ui_admin_enable_ajax() {
       backdrop_set_message(t('Enabled @font.', array('@font' => $font->name)));
       $output['complete'] = 1;
 
-    } // if
+    }
 
-  } // if
+  }
   else {
     backdrop_set_message(t('Font not found. Could not enable.'), 'error');
-  } // else
+  }
 
   $output['status'] = theme_status_messages(array('display' => 'status')) . '<p>' . fontyourface_ui_enabled_count() . '</p>';
   backdrop_json_output($output);
 
-} // fontyourface_ui_admin_enable_ajax
+}
 
 /**
  * Disables font based on POSTed fid.
@@ -1517,17 +1517,17 @@ function fontyourface_ui_admin_disable_ajax() {
       backdrop_set_message(t('Disabled @font.', array('@font' => $font->name)));
       $output['complete'] = 1;
 
-    } // if
+    }
 
-  } // if
+  }
   else {
     backdrop_set_message(t('Font not found. Could not disable.'), 'error');
-  } // else
+  }
 
   $output['status'] = theme_status_messages(array('display' => 'status')) . '<p>' . fontyourface_ui_enabled_count() . '</p>';
   backdrop_json_output($output);
 
-} // fontyourface_ui_admin_disable_ajax
+}
 
 /**
  * Returns HTML for enabled font count.
@@ -1542,11 +1542,11 @@ function fontyourface_ui_enabled_count() {
 
     return l(format_plural($enabled_count, '1 font currently enabled.', '@count fonts currently enabled.'), 'admin/appearance/fontyourface');
 
-  } // if
+  }
 
   return t('@count fonts currently enabled.', array('@count' => 0));
 
-} // fontyourface_ui_enabled_count
+}
 
 /**
  * Returns tab header for provider browsing.
@@ -1564,10 +1564,10 @@ function fontyourface_ui_browse_tabs() {
 
     $tabs .= '<li>' . l($info['name'], 'admin/appearance/fontyourface/browse/' . $provider) . '</li>';
 
-  } // foreach
+  }
 
   $tabs .= '</ul>';
 
   return $tabs;
 
-} // fontyourface_ui_browse_tabs
+}

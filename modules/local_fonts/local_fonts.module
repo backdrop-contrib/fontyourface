@@ -11,7 +11,7 @@ function local_fonts_fontyourface_info() {
     'base_path' => 'public://fontyourface/local_fonts/',
   );
 
-} // local_fonts_fontyourface_info
+}
 
 /**
  * Implements hook_menu().
@@ -38,7 +38,7 @@ function local_fonts_menu() {
 
   return $items;
 
-} // local_fonts_menu
+}
 
 /**
  * Implements hook_form_alter().
@@ -53,7 +53,7 @@ function local_fonts_form_alter(&$form, &$form_state, $form_id) {
       '#markup' => l(t('Import Local Font'), 'admin/config/user-interface/fontyourface/local_fonts'),
     );
 
-  } // if
+  }
   elseif ($form_id == 'fontyourface_ui_admin_edit_form') {
 
     $font = fontyourface_get_font($form['fid']['#value']);
@@ -68,11 +68,11 @@ function local_fonts_form_alter(&$form, &$form_state, $form_id) {
         '#submit' => array('local_fonts_delete_button_submit'),
       );
 
-    } // if
+    }
 
-  } // elseif
+  }
 
-} // local_fonts_form_fontyourface_settings_form_alter
+}
 
 /**
  * Redirect to delete confirmation form.
@@ -86,7 +86,7 @@ function local_fonts_delete_button_submit($form, &$form_state) {
   }
   $form_state['redirect'] = array('admin/appearance/fontyourface/local_fonts/delete/' . $form['fid']['#value'], $destination);
 
-} // local_fonts_delete_button_submit
+}
 
 /**
  * Form for submitting a local font.
@@ -170,7 +170,7 @@ function local_fonts_add_form($form, $form_state) {
 
   return $form;
 
-} // local_fonts_add_form
+}
 
 /**
  * Implements hook_form_validate().
@@ -207,25 +207,25 @@ function local_fonts_add_form_validate($form, &$form_state) {
 
         if (is_array($validation) && count($validation) > 0) {
           form_set_error($key, implode(', ', $validation));
-        } // if
+        }
         else {
           $file_uploaded = TRUE;
-        } // else
+        }
 
-      } // if
+      }
 
-    } // foreach
+    }
 
-  } // if
+  }
   else {
     form_set_error('files', t('Error creating file directory.'));
-  } // else
+  }
 
   if (!$file_uploaded) {
     form_set_error('files', t('Upload at least one font file to go with the font family.'));
-  } // if
+  }
 
-} // local_fonts_add_form_validate
+}
 
 /**
  * Implements hook_form_submit().
@@ -269,7 +269,7 @@ function local_fonts_add_form_submit($form, &$form_state) {
 
       if ($format == 'ttf') {
         $format = 'truetype';
-      } // if
+      }
 
       if (!empty($filename)) {
 
@@ -289,7 +289,7 @@ function local_fonts_add_form_submit($form, &$form_state) {
               $src .= '  src: url("' . $file->filename . '");' . "\n";
               $combined_sources[] = 'url("' . $file->filename . '?#iefix") format("embedded-opentype")';
 
-            } // if
+            }
             elseif ($format == 'svg') {
 
               // Get the font ID from the SVG file.
@@ -300,28 +300,28 @@ function local_fonts_add_form_submit($form, &$form_state) {
 
                 if (preg_match('#id="([^"]+)"#i', $font_tag_match[1], $id_match)) {
                   $hash = $id_match[1];
-                } // if
+                }
                 elseif (preg_match("#id='([^']+)'#i", $font_tag_match[1], $id_match)) {
                   $hash = $id_match[1];
-                } // elseif
+                }
 
-              } // if
+              }
 
               $url = $file->filename . '#' . $hash;
               $combined_sources[] = 'url("' . $url . '") format("' . $format . '")';
 
-            } // elseif
+            }
             else {
 
               $combined_sources[] = 'url("' . $file->filename . '") format("' . $format . '")';
 
-            } // else
+            }
 
-        } // if
+        }
 
-      } // if
+      }
 
-    } // foreach
+    }
 
     if (count($combined_sources) > 0) {
 
@@ -329,7 +329,7 @@ function local_fonts_add_form_submit($form, &$form_state) {
 
       $src .= '  src: ' . implode(', ', $combined_sources) . ';' . "\n";
 
-    } // if
+    }
 
     $generated_css = '@font-face {' . "\n";
     $generated_css .= "  font-family: '" . $font_family . "';" . "\n";
@@ -358,11 +358,11 @@ function local_fonts_add_form_submit($form, &$form_state) {
 
     backdrop_set_message(t('@font added. Make sure to enable it before you can use it.', array('@font' => $font_family)));
 
-  } // if
+  }
 
   backdrop_goto('admin/config/user-interface/fontyourface');
 
-} // local_fonts_add_form_submit
+}
 
 /**
  * Form for deleting a local font.
@@ -390,7 +390,7 @@ function local_fonts_delete_form($form, $form_state, $fid) {
 
   return $form;
 
-} // local_fonts_delete_form
+}
 
 /**
  * Handles submission of delete form.
@@ -401,7 +401,7 @@ function local_fonts_delete_form_submit($form, &$form_state) {
 
     backdrop_goto('admin/appearance/fontyourface/edit/' . $form['fid']['#value']);
 
-  } // if
+  }
   else {
 
     $font = fontyourface_get_font($form['fid']['#value']);
@@ -410,9 +410,9 @@ function local_fonts_delete_form_submit($form, &$form_state) {
     backdrop_set_message(t('@font deleted.', array('@font' => $font->name)));
     backdrop_goto('admin/appearance/fontyourface');
 
-  } // else
+  }
 
-} // local_fonts_delete_form_submit
+}
 
 /**
  * Deletes given font.
@@ -424,7 +424,7 @@ function local_fonts_delete_font($font) {
   if ($font->provider != 'local_fonts') {
     backdrop_set_message(t('This is not a local font and cannot be deleted.'));
     return TRUE;
-  } // if
+  }
 
   $metadata = unserialize($font->metadata);
 
@@ -438,9 +438,9 @@ function local_fonts_delete_font($font) {
 
     if ($file != '.' && $file != '..') {
       unlink($directory . '/' . $file);
-    } // if
+    }
 
-  } // foreach
+  }
 
   // Delete the directory.
 
@@ -456,7 +456,7 @@ function local_fonts_delete_font($font) {
 
   return TRUE;
 
-} // local_fonts_delete_font
+}
 
 /**
  * Implements hook_fontyourface_preview().
@@ -501,10 +501,10 @@ function local_fonts_preprocess_page(&$vars) {
         else {
           fontyourface_add_css_in_preprocess($vars, $metadata['path'], FALSE);
         }
-      } // if
+      }
 
-    } // foreach
+    }
 
-  } // if
+  }
 
-} // local_fonts_preprocess_page
+}

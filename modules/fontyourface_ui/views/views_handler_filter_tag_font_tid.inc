@@ -26,7 +26,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
     return $options;
 
-  } // option_definition
+  }
 
   function extra_options_form(&$form, &$form_state) {
 
@@ -44,7 +44,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
     foreach ($type_results as $type_result) {
       $type_options[$type_result->type] = $type_result->type;
-    } // foreach
+    }
 
     $form['tag_type'] = array(
       '#type' => 'radios',
@@ -54,7 +54,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
       '#default_value' => $this->options['tag_type'],
     );
 
-  } // extra_options_form
+  }
 
   function value_form(&$form, &$form_state) {
 
@@ -72,13 +72,13 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
           if ($default) {
             $default .= ', ';
-          } // if
+          }
 
           $default .= $tag->name;
 
-        } // foreach
+        }
 
-      } // if
+      }
 
       $form['value'] = array(
         '#title' => t('Select tags'),
@@ -86,7 +86,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
         '#default_value' => $default,
       );
 
-    } // if
+    }
     else {
 
       $options = array();
@@ -98,13 +98,13 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
       if (isset($this->options['tag_type']) && $this->options['tag_type'] != '*') {
         $query->condition('t.type', $this->options['tag_type']);
-      } // if
+      }
 
       $result = $query->execute();
 
       while ($tag = $result->fetchObject()) {
         $options[$tag->tid] = $tag->name;
-      } // while
+      }
 
       $default_value = (array) $this->value;
 
@@ -118,27 +118,27 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
           if (empty($this->options['expose']['single']) && !empty($this->options['expose']['optional'])) {
             $default_value = array();
-          } // if
+          }
 
-        } // if
+        }
 
         if (!empty($this->options['expose']['single'])) {
 
           if (!empty($this->options['expose']['optional']) && (empty($default_value) || !empty($this->options['expose']['reduce']))) {
             $default_value = 'All';
-          } // if
+          }
           elseif (empty($default_value)) {
             $keys = array_keys($options);
             $default_value = array_shift($keys);
-          } // elseif
+          }
           else {
             $copy = $default_value;
             $default_value = array_shift($copy);
-          } // else
+          }
 
-        } // if
+        }
 
-      } // if
+      }
 
       $form['value'] = array(
         '#type' => 'select',
@@ -151,30 +151,30 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
       if (!empty($form_state['exposed']) && !isset($form_state['input'][$identifier])) {
         $form_state['input'][$identifier] = $default_value;
-      } // if
+      }
 
-    } // else
+    }
 
     if (empty($form_state['exposed'])) {
       $this->helper->options_form($form, $form_state);
-    } // if
+    }
 
-  } // value_form
+  }
 
   function value_validate($form, &$form_state) {
 
     if ($this->options['type'] != 'textfield') {
       return;
-    } // if
+    }
 
     $values = backdrop_explode_tags($form_state['values']['options']['value']);
     $tids = $this->validate_tag_strings($form['value'], $values);
 
     if ($tids) {
       $form_state['values']['options']['value'] = $tids;
-    } // if
+    }
 
-  } // value_validate
+  }
 
   function accept_exposed_input($input) {
 
@@ -194,19 +194,19 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
       // If we have previously validated input, override.
       if (isset($this->validated_exposed_input)) {
         $this->value = $this->validated_exposed_input;
-      } // if
+      }
 
-    } // if
+    }
 
     return $rc;
 
-  } // value_validate
+  }
 
   function exposed_validate(&$form, &$form_state) {
 
     if (empty($this->options['exposed'])) {
       return;
-    } // if
+    }
 
     $identifier = $this->options['expose']['identifier'];
 
@@ -214,15 +214,15 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
       if ($form_state['values'][$identifier] != 'All') {
         $this->validated_exposed_input = (array) $form_state['values'][$identifier];
-      } // if
+      }
 
       return;
 
-    } // if
+    }
 
     if (empty($this->options['expose']['identifier'])) {
       return;
-    } // if
+    }
 
     $values = backdrop_explode_tags($form_state['values'][$identifier]);
 
@@ -230,9 +230,9 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
     if ($tids) {
       $this->validated_exposed_input = $tids;
-    } // if
+    }
 
-  } // exposed_validate
+  }
 
   /**
    * Validate the user string. Since this can come from either the form
@@ -243,7 +243,7 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
     if (empty($values)) {
       return array();
-    } // if
+    }
 
     $tids = array();
     $args = array();
@@ -252,11 +252,11 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
     foreach ($values as $value) {
       $missing[strtolower($value)] = TRUE;
       $args[] = $value;
-    } // foreach
+    }
 
     if (!$args) {
       return;
-    } // if
+    }
 
     $result = db_select('fontyourface_tag', 't')
       ->condition('t.name', $args, 'IN')
@@ -265,11 +265,11 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
     foreach ($result as $tag) {
       unset($missing[strtolower($tag->name)]);
       $tids[] = $tag->tid;
-    } // foreach
+    }
 
     if ($missing) {
       form_error($form, format_plural(count($missing), 'Unable to find tag: @tags', 'Unable to find tags: @tags', array('@tags' => implode(', ', array_keys($missing)))));
-    } // if
+    }
 
     return $tids;
 
@@ -283,9 +283,9 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
     if ($this->options['type'] != 'select') {
       unset($form['expose']['reduce']);
-    } // if
+    }
 
-  } // expose_form_right
+  }
 
   function admin_summary() {
 
@@ -299,12 +299,12 @@ class views_handler_filter_tag_font_tid extends views_handler_filter_many_to_one
 
       foreach ($result as $tag) {
         $this->value_options[$tag->tid] = $tag->name;
-      } // foreach
+      }
 
-    } // if
+    }
 
     return parent::admin_summary();
 
-  } // admin_summary
+  }
 
-} // views_handler_filter_tag_font_tid
+}

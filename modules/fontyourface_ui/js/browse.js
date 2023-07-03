@@ -7,9 +7,9 @@
       $('.fontyourface-footer a.enable-link').click(fontyourfaceEnableClick);
       $('.fontyourface-footer a.disable-link').click(fontyourfaceDisableClick);
 
-    } // attach
+    }
 
-  } // Backdrop.behaviors.fontyourfaceAddForm
+  }
 
   function fontyourfaceEnableClick() {
 
@@ -35,7 +35,7 @@
           .unbind('click')
           .click(fontyourfaceDisableClick);
 
-      } // if
+      }
 
       font.find('.fontyourface-indicator').remove();
       $('.view-header div').html(json.status);
@@ -44,7 +44,7 @@
 
     return false;
 
-  } // fontyourfaceEnableClick
+  }
 
   function fontyourfaceDisableClick() {
 
@@ -70,7 +70,7 @@
           .unbind('click')
           .click(fontyourfaceEnableClick);
 
-      } // if
+      }
 
       font.find('.fontyourface-indicator').remove();
       $('.view-header div').html(json.status);
@@ -79,6 +79,6 @@
 
     return false;
 
-  } // fontyourfaceDisableClick
+  }
 
 })(jQuery);

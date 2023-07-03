@@ -11,7 +11,7 @@ function fontsquirrel_fontyourface_info() {
     'base_path' => 'https://www.fontsquirrel.com/fonts/',
   );
 
-} // fontsquirrel_fonts_api_fontyourface_info
+}
 
 /**
  * Implements hook_fontyourface_preview().
@@ -23,7 +23,7 @@ function fontsquirrel_fontyourface_preview($font, $text = NULL, $size = 18) {
 
   if ($text == NULL) {
     $text = $font->name;
-  } // if
+  }
 
   if ($size == 'all') {
 
@@ -35,22 +35,22 @@ function fontsquirrel_fontyourface_preview($font, $text = NULL, $size = 18) {
 
       $output = '<img src="https://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=300&size=' . $size . '&text=' . urlencode($text) . '" />';
 
-    } // foreach
+    }
 
     $output .= '<div><img src="https://www.fontsquirrel.com/utils/makeSolotypeSample.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&case=all" /></div>';
 
-  } // if
+  }
   else {
 
     // Display single size.
 
     $output = '<img src="https://www.fontsquirrel.com/utils/makeFont.php?font=' . $metadata['id'] . '/' . $metadata['font_filename'] . '&width=150&size=' . ($size - 10) . '&text=' . urlencode($text) . '" />';
 
-  } // else
+  }
 
   return $output;
 
-} // fontsquirrel_fontyourface_preview
+}
 
 /**
  * Implements template_preprocess_page().
@@ -75,9 +75,9 @@ function fontsquirrel_preprocess_page(&$vars) {
           $paths[] = $metadata['path'];
         }
 
-      } // if
+      }
 
-    } // foreach
+    }
 
     if (count($paths) > 0) {
 
@@ -85,13 +85,13 @@ function fontsquirrel_preprocess_page(&$vars) {
 
         fontyourface_add_css_in_preprocess($vars, 'fontyourface/fontsquirrel/' . $path . '-fontfacekit/stylesheet.css');
 
-      } // foreach
+      }
 
-    } // if
+    }
 
-  } // if
+  }
 
-} // fontsquirrel_preprocess_page
+}
 
 /**
  * Implements hook_fontyourface_enable().
@@ -114,23 +114,23 @@ function fontsquirrel_fontyourface_enable($font) {
         $font->css_family = $decoded[0]->{'fontface_name'};
         fontyourface_save_font($font);
 
-      } // if
+      }
       else {
 
         backdrop_set_message(t('There was an error importing font information for %fontname from Font Squirrel. Font not found in API.', array('%fontname' => $font->name)), 'error');
         $success = FALSE;
 
-      } // else
+      }
 
-    } // if
+    }
     else {
 
-      backdrop_set_message(t('There was an error importing font information for %fontname from Font Squirrel. API not responding.', array('%fontname' => $font-name)), 'error');
+      backdrop_set_message(t('There was an error importing font information for %fontname from Font Squirrel. API not responding.', array('%fontname' => $font->name)), 'error');
       $success = FALSE;
 
-    } // else
+    }
 
-  } // if
+  }
 
   $directory_location = file_build_uri('fontyourface/fontsquirrel/' . $metadata['path'] . '-fontfacekit');
 
@@ -158,23 +158,23 @@ function fontsquirrel_fontyourface_enable($font) {
 
           file_unmanaged_save_data($kit_result->data, $zip_location, FILE_EXISTS_REPLACE);
 
-        } // if
+        }
         else {
 
           backdrop_set_message(t('There was an error saving font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
           $success = FALSE;
 
-        } // else
+        }
 
-      } // if
+      }
       else {
 
         backdrop_set_message(t('There was an error downloading font %fontname from Font Squirrel.', array('%fontname' => $font->name)), 'error');
         $success = FALSE;
 
-      } // else
+      }
 
-    } // if
+    }
 
     if ($success) {
 
@@ -192,15 +192,15 @@ function fontsquirrel_fontyourface_enable($font) {
             $data = zip_entry_read($entry, $zip_entry_filesize);
             file_unmanaged_save_data($data, $directory_location . '/' . $entry_name, FILE_EXISTS_REPLACE);
 
-          } // if
+          }
 
           zip_entry_close($entry);
 
-        } // while
+        }
 
         zip_close($zip);
 
-      } // if
+      }
       else {
 
         backdrop_set_message(t('Unable to unzip font %fontname at <code>@zip_location</code>. See !zipdocs to enable unzipping, or unzip the file manually and enable this font again.', array(
@@ -210,19 +210,19 @@ function fontsquirrel_fontyourface_enable($font) {
         )), 'error');
         $success = FALSE;
 
-      } // else
+      }
 
-    } // if
+    }
 
     if (! $success) {
       fontyourface_disable_font($font);
-    } // if
+    }
 
-  } // if
+  }
 
   return $success;
 
-} // fontsquirrel_fontyourface_enable
+}
 
 /**
  * Implements hook_fontyourface_import().
@@ -270,7 +270,7 @@ function fontsquirrel_fontyourface_import() {
         }
 
       }
-    } // foreach
+    }
 
     if (count($families) > 0) {
       $batch = array(
@@ -281,15 +281,15 @@ function fontsquirrel_fontyourface_import() {
       batch_set($batch);
     }
 
-  } // if
+  }
   else {
 
     backdrop_set_message(t('There was an error downloading font list from Font Squirrel.'), 'error');
-    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($response, TRUE)));
+    fontyourface_log('Invalid backdrop_http_request response: @response', array('@response' => print_r($api_result, TRUE)));
 
-  } // else
+  }
 
-} // fontsquirrel_fontyourface_import
+}
 
 /**
  * Batch processing function - import font variants.

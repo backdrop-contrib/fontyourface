@@ -19,9 +19,9 @@ class views_handler_field_fontyourface_font extends views_handler_field {
 
     if (!empty($this->options['link_to_font'])) {
       $this->additional_fields['fid'] = 'fid';
-    } // if
+    }
 
-  } // init
+  }
 
   function option_definition() {
 
@@ -31,7 +31,7 @@ class views_handler_field_fontyourface_font extends views_handler_field {
 
     return $options;
 
-  } // option_definition
+  }
 
   /**
    * Provide link to font option
@@ -60,7 +60,7 @@ class views_handler_field_fontyourface_font extends views_handler_field {
       '#default_value' => $this->options['display_as'],
     );
 
-  } // options_form
+  }
 
   function render($values) {
 
@@ -71,17 +71,17 @@ class views_handler_field_fontyourface_font extends views_handler_field {
       $this->options['alter']['make_link'] = TRUE;
       $this->options['alter']['path'] = 'admin/appearance/fontyourface/edit/' . $values->{$this->aliases['fid']} . '?' . backdrop_http_build_query($destination);
 
-    } // if
+    }
 
     if ($this->options['display_as'] == 'preview') {
 
       $font = fontyourface_get_font($values->fid);
       return fontyourface_preview($font, $values->{$this->field_alias}, 16);
 
-    } // if
+    }
 
     return check_plain($values->{$this->field_alias});
 
-  } // render
+  }
 
-} // views_handler_field_fontyourface_font
+}

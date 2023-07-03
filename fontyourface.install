@@ -196,7 +196,7 @@ function fontyourface_1200_schema() {
 
   return $schema;
 
-} // fontyourface_1200_schema
+}
 
 /**
  * Implements hook_schema().
@@ -205,7 +205,7 @@ function fontyourface_schema() {
 
   return fontyourface_1200_schema();
 
-} // fontyourface_schema
+}
 
 /**
  * Convert variables to config.

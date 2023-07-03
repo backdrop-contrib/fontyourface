@@ -19,9 +19,9 @@ class views_handler_field_fontyourface_license extends views_handler_field {
 
     if (!empty($this->options['link_to_license'])) {
       $this->additional_fields['license_url'] = 'license_url';
-    } // if
+    }
 
-  } // init
+  }
 
   function option_definition() {
 
@@ -30,7 +30,7 @@ class views_handler_field_fontyourface_license extends views_handler_field {
 
     return $options;
 
-  } // option_definition
+  }
 
   /**
    * Provide link to license option
@@ -49,7 +49,7 @@ class views_handler_field_fontyourface_license extends views_handler_field {
       '#default_value' => $this->options['link_to_license'],
     );
 
-  } // options_form
+  }
 
   function render($values) {
 
@@ -62,12 +62,12 @@ class views_handler_field_fontyourface_license extends views_handler_field {
         $this->options['alter']['make_link'] = TRUE;
         $this->options['alter']['path'] = $license_url;
 
-      } // if
+      }
 
-    } // if
+    }
 
     return check_plain($values->{$this->field_alias});
 
-  } // render
+  }
 
-} // views_handler_field_fontyourface_license
+}
